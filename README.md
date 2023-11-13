@@ -12,8 +12,10 @@
 ## 📦 Install
 
 ```bash
-# npm
-npm i web-error-catch
+# web
+npm i @error-catch/web
+# server
+npm i @error-catch/server
 ```
 
 ## ⚡ Quick Start
