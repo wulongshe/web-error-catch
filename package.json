@@ -8,6 +8,7 @@
     "lint-staged": "lint-staged",
     "prettier": "npx --no-install pnpm recursive run prettier",
     "test": "npx --no-install pnpm recursive run test",
+    "build": "npx --no-install pnpm recursive run build",
     "ac": "git add . && cz",
     "cm": "cz"
   },

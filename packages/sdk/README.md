@@ -1,4 +1,4 @@
-# ERROR CATCH WEB
+# WEC WEB
 
 ## Description
 

@@ -1,4 +1,4 @@
-# ERROR CATCH SERVER
+# WEC SERVER
 
 ## Description
 

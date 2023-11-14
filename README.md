@@ -12,10 +12,10 @@
 ## 📦 Install
 
 ```bash
-# web
-npm i @error-catch/web
+# sdk
+npm i @wec/sdk
 # plugin
-npm i -D @error-catch/plugin
+npm i -D @wec/plugin
 ```
 
 ## ⚡ Quick Start Dev
@@ -26,36 +26,105 @@ cd web-error-catch
 # install dependencies
 pnpm i
 
+# start web
+cd examples/web
+pnpm dev
+
 # start server
 cd packages/server
 pnpm dev
 
 # commit code
-pnpm cz
+# pnpm cz
 # add and commit code
 pnpm ac
 ```
 
 ## 🦄 Usage
 
-### plugin
+### plugin webpack
 
 ```ts
-import UploadSourceMapPlugin from '@error-catch/plugin';
+import UploadSourceMapPlugin from '@wec/plugin-webpack';
+import type { Configuration } from 'webpack';
 
-export default {
-  // ...其他配置项
+const config: Configuration = {
+  // ...others config
   plugins: [
     new UploadSourceMapPlugin({
-      url: 'https://example.com/source-maps',
+      url: 'https://example.com/upload/source-map',
     }),
   ],
 };
+
+export default config;
 ```
 
-## 🔑 API
+### plugin vite
 
 ```ts
+import { defineConfig } from 'vite';
+import UploadSourceMapPlugin from '@wec/plugin-vite';
+
+export default defineConfig({
+  // ...others config
+  plugins: [
+    UploadSourceMapPlugin({
+      url: 'https://example.com/upload/source-map',
+    }),
+  ],
+});
+```
+
+### sdk
+
+```ts
+import { initialize } from '@wec/sdk';
+
+initialize({
+  url: 'https://example.com/report/error',
+});
+```
+
+### server
+
+```bash
+cd packages/server
+# build
+npm run build
+# default port 6000
+node dist/index.js --port 8080
+```
+
+## 🔑 Server API
+
+### upload source map
+
+```ts
+interface UploadSourceMap {
+  method: 'POST';
+  url: '/upload/source-map';
+  query: {
+    filename: string;
+  };
+  body: File;
+  header: {
+    'Content-Type': 'multipart/form-data';
+  }
+}
+```
+
+### report error information
+
+```ts
+interface ReportError {
+  method: 'GET';
+  url: '/report/error';
+  query: {
+    meta: {};
+    error: {};
+  };
+}
 ```
 
 ## 📄 License

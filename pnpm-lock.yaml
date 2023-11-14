@@ -42,7 +42,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  packages/plugin:
+  packages/plugin-vite:
     devDependencies:
       '@types/node':
         specifier: ^20.9.0
@@ -62,9 +62,42 @@ importers:
       vitest:
         specifier: ^0.23.4
         version: 0.23.4
+
+  packages/plugin-webpack:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.9.0
+        version: 20.9.0
+      prettier:
+        specifier: ^3.0.3
+        version: 3.0.3
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(ts-node@10.9.1)(typescript@5.2.2)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+      vitest:
+        specifier: ^0.23.4
+        version: 0.23.4
       webpack:
         specifier: ^5.89.0
         version: 5.89.0(esbuild@0.18.20)
+
+  packages/sdk:
+    devDependencies:
+      prettier:
+        specifier: ^3.0.3
+        version: 3.0.3
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(ts-node@10.9.1)(typescript@5.2.2)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+      vitest:
+        specifier: ^0.23.4
+        version: 0.23.4
 
   packages/server:
     dependencies:
@@ -99,27 +132,6 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
-      vite:
-        specifier: ^4.4.9
-        version: 4.4.9(@types/node@20.9.0)
-      vitest:
-        specifier: ^0.23.4
-        version: 0.23.4
-
-  packages/web:
-    devDependencies:
-      prettier:
-        specifier: ^3.0.3
-        version: 3.0.3
-      tsup:
-        specifier: ^7.2.0
-        version: 7.2.0(ts-node@10.9.1)(typescript@5.2.2)
-      typescript:
-        specifier: ^5.2.2
-        version: 5.2.2
-      vite:
-        specifier: ^4.4.9
-        version: 4.4.9(@types/node@20.4.7)
       vitest:
         specifier: ^0.23.4
         version: 0.23.4
@@ -4430,42 +4442,6 @@ packages:
       postcss: 8.4.29
       resolve: 1.22.4
       rollup: 2.79.1
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: true
-
-  /vite@4.4.9(@types/node@20.4.7):
-    resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 20.4.7
-      esbuild: 0.18.20
-      postcss: 8.4.29
-      rollup: 3.29.0
     optionalDependencies:
       fsevents: 2.3.3
     dev: true

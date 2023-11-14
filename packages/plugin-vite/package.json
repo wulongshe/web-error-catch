@@ -1,5 +1,5 @@
 {
-  "name": "@error-catch/web",
+  "name": "@wec/plugin-vite",
   "version": "0.0.0",
   "author": "shewulong",
   "license": "MIT",
@@ -19,7 +19,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/shewulong/web-error-catch.git",
-    "directory": "packages/web"
+    "directory": "packages/plugin-vite"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -38,10 +38,14 @@
     "node": ">=14.20.0"
   },
   "devDependencies": {
+    "@types/node": "^20.9.0",
     "prettier": "^3.0.3",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vitest": "^0.23.4"
+  },
+  "peerDependencies": {
+    "vite": "^4.4.9"
   }
 }
