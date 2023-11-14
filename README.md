@@ -14,8 +14,10 @@
 ```bash
 # sdk
 npm i @wec/sdk
-# plugin
-npm i -D @wec/plugin
+# vite plugin
+npm i -D @wec/plugin-vite
+# webpack plugin
+npm i -D @wec/plugin-webpack
 ```
 
 ## ⚡ Quick Start Dev
