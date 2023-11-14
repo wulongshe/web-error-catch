@@ -5,17 +5,7 @@
   "license": "MIT",
   "description": "",
   "keywords": [],
-  "type": "module",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
+  "type": "commonjs",
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/shewulong/web-error-catch.git",
@@ -26,25 +16,29 @@
   },
   "scripts": {
     "prettier": "prettier -c --write \"src/**/*\" \"test/**/*\"",
-    "upload": "npm run test && npm run build && npm publish --access public",
-    "build": "tsup src/index.ts --dts --format cjs,esm --minify --clean",
+    "build": "tsup src/index.ts --format cjs --clean",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "preview": "npm run build && node dist/index.js",
     "test": "vitest run"
   },
-  "files": [
-    "dist",
-    "!dist/index.d.cts"
-  ],
+  "files": [],
   "engines": {
     "node": ">=14.20.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.9.0",
+    "@types/yargs": "^17.0.31",
+    "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
+    "ts-node": "^10.9.1",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vitest": "^0.23.4"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "yargs": "^17.7.2"
   }
 }

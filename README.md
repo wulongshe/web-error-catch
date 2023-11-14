@@ -14,18 +14,43 @@
 ```bash
 # web
 npm i @error-catch/web
-# server
-npm i @error-catch/server
+# plugin
+npm i -D @error-catch/plugin
 ```
 
-## ⚡ Quick Start
+## ⚡ Quick Start Dev
 
 ```bash
+# entry project
+cd web-error-catch
+# install dependencies
+pnpm i
+
+# start server
+cd packages/server
+pnpm dev
+
+# commit code
+pnpm cz
+# add and commit code
+pnpm ac
 ```
 
 ## 🦄 Usage
 
+### plugin
+
 ```ts
+import UploadSourceMapPlugin from '@error-catch/plugin';
+
+export default {
+  // ...其他配置项
+  plugins: [
+    new UploadSourceMapPlugin({
+      url: 'https://example.com/source-maps',
+    }),
+  ],
+};
 ```
 
 ## 🔑 API
