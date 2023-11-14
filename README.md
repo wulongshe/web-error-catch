@@ -34,8 +34,6 @@ pnpm dev
 cd packages/server
 pnpm dev
 
-# commit code
-# pnpm cz
 # add and commit code
 pnpm ac
 ```
