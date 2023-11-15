@@ -6,11 +6,14 @@ export interface UploadSourceMapPluginOptions {
 export default class UploadSourceMapPlugin {
   constructor(private options: UploadSourceMapPluginOptions) {}
   apply(compiler: Compiler) {
-    compiler.hooks.afterEmit.tap('UploadSourceMapPlugin', (compilation: Compilation) => {
-      if (process.env.NODE_ENV !== 'production') return;
-      const sourceMapFilePath = compilation.options.output.sourceMapFilename;
-      if (!sourceMapFilePath) return;
-      console.log('Source map file path:', sourceMapFilePath);
+    compiler.hooks.emit.tap('UploadSourceMapPlugin', (compilation: Compilation) => {
+      // if (process.env.NODE_ENV !== 'production') return;
+      const sourceMaps = Object.entries(compilation.assets)
+        .filter(([name]) => name.endsWith('.map'))
+        .map(([, asset]) => (asset as any)?._value);
+
+      console.log('Generated Source Maps:');
+      console.log(sourceMaps);
     });
   }
 }
