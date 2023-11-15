@@ -10,9 +10,11 @@ export default function uploadSourceMapPlugin(options: UploadSourceMapOptions): 
     name: 'upload-sourcemap-plugin',
     generateBundle(_, bundle) {
       if (process.env.NODE_ENV !== 'production') return;
-      const sourcemapPath = (bundle['index.js'] as any).map?.file;
-      if (!sourcemapPath) return;
-      console.log('Source map path:', sourcemapPath);
+      Object.entries(bundle).forEach(([fileName, chunk]) => {
+        const sourcemapPath = (chunk as any)?.map?.file;
+        if (!sourcemapPath) return;
+        console.log(fileName, '=>', sourcemapPath);
+      });
     },
   };
 }
