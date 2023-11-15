@@ -28,9 +28,15 @@ cd web-error-catch
 # install dependencies
 pnpm i
 
-# start web
-cd examples/web
-pnpm dev
+# start react app
+cd examples/react-app
+pnpm build
+pnpm preview
+
+# start vue app
+cd examples/vue-app
+pnpm build
+pnpm preview
 
 # start server
 cd packages/server
