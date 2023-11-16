@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UploadSourceMapPlugin = require('@wec/plugin-webpack').default;
 
 module.exports = {
+  mode: 'production',
   entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, 'dist'),
