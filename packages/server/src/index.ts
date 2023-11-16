@@ -1,4 +1,5 @@
 import express from 'express';
+import router from './router';
 import { command } from './command';
 
 async function main() {
@@ -11,6 +12,9 @@ async function main() {
   // 配置插件
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+
+  // 配置路由
+  app.use(router);
 
   // 开启服务，监听端口
   app.listen(port, () => {
