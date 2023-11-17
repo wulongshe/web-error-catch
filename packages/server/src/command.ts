@@ -5,7 +5,7 @@ export async function command() {
     port: {
       alias: 'p',
       type: 'number',
-      default: 6000,
+      default: 8000,
       description: 'server port',
     },
   }).argv;

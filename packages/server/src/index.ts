@@ -1,6 +1,7 @@
+import bodyParser from 'body-parser';
 import express from 'express';
-import router from './router';
 import { command } from './command';
+import router from './router';
 
 async function main() {
   // 获取命令行参数
@@ -12,6 +13,7 @@ async function main() {
   // 配置插件
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+  app.use(bodyParser.raw({ type: '*/*' }));
 
   // 配置路由
   app.use(router);

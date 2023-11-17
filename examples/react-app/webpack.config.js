@@ -1,6 +1,6 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-// import UploadSourceMapPlugin from '@wec/plugin-webpack';
+import UploadSourceMapPlugin from '@wec/plugin-webpack';
 
 export default {
   mode: 'production',
@@ -25,9 +25,9 @@ export default {
     new HtmlWebpackPlugin({
       template: 'index.html',
     }),
-    // new UploadSourceMapPlugin({
-    //   url: 'http://localhost:6000/upload/source-map',
-    // }),
+    new UploadSourceMapPlugin({
+      url: 'http://localhost:8000/upload/source-map',
+    }),
   ],
   devtool: 'source-map',
 };

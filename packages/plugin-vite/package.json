@@ -11,9 +11,12 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": {
+        "require": "./index.d.cts",
+        "import": "./index.d.ts"
+      },
       "require": "./dist/index.cjs",
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/index.js"
     }
   },
   "repository": {
@@ -31,8 +34,7 @@
     "test": "vitest run"
   },
   "files": [
-    "dist",
-    "!dist/index.d.cts"
+    "dist"
   ],
   "engines": {
     "node": ">=14.20.0"

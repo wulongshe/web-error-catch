@@ -2,7 +2,7 @@ import { register } from '@wec/sdk';
 import { setupCounter } from './trigger';
 
 register({
-  url: 'http://localhost:6000/report/error',
+  url: 'http://localhost:8000/report/error',
 });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
