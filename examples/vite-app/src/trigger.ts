@@ -1,6 +1,6 @@
 export function setupCounter(element: HTMLButtonElement) {
-  element.innerHTML = `trigger error`;
+  element.innerHTML = `trigger custom error`;
   element.addEventListener('click', () => {
-    throw new Error('trigger error');
+    throw new Error('custom error');
   });
 }

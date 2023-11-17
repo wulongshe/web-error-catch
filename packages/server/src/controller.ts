@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, join } from 'path';
 
 export function writeMaps(maps: Record<string, string>) {
-  const sourceMapPath = resolve(__dirname, './map');
+  const sourceMapPath = resolve(process.cwd(), './map');
   if (!existsSync(sourceMapPath)) {
     mkdirSync(sourceMapPath);
   }

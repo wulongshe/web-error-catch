@@ -1,12 +1,12 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UploadSourceMapPlugin = require('@wec/plugin-webpack').default;
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+// import UploadSourceMapPlugin from '@wec/plugin-webpack';
 
-module.exports = {
+export default {
   mode: 'production',
   entry: './src/index.ts',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(process.cwd(), 'dist'),
     filename: '[name].[hash].js',
   },
   resolve: {
@@ -25,9 +25,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'index.html',
     }),
-    new UploadSourceMapPlugin({
-      url: 'http://localhost:6000/upload/source-map',
-    }),
+    // new UploadSourceMapPlugin({
+    //   url: 'http://localhost:6000/upload/source-map',
+    // }),
   ],
   devtool: 'source-map',
 };
