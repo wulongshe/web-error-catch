@@ -14,6 +14,7 @@ export function register(options: Options) {
   window.addEventListener(
     'error',
     (error) => {
+      console.log('error', error);
       send(url, { meta, stack: error.error.stack });
     },
     true,

@@ -1,5 +1,5 @@
 import express, { type Request } from 'express';
-import { writeMaps } from './controller';
+import { reportError, writeMaps } from './controller';
 
 const router = express.Router();
 
@@ -8,9 +8,7 @@ type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
 /* 上报异常 */
 router.post('/report/error', async (req: IRequest<ArrayBuffer>, res, next) => {
   const { body } = req;
-  const json = new TextDecoder('utf-8').decode(body);
-  const data = JSON.parse(json);
-  console.log(data);
+  reportError(body)
   res.send({ status: 200, message: 'success' });
   next();
 });
