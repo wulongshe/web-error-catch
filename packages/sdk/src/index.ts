@@ -1,7 +1,7 @@
 import { send } from './send';
 
 export interface Options {
-  meta?: any;
+  meta?: string;
   url: string;
 }
 
