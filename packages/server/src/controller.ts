@@ -9,7 +9,7 @@ export interface IReportError {
 
 export async function reportError({ meta, stack }: IReportError) {
   const { message, stacks } = await parseStack(stack, readSourceMap)
-  const originalStack = message + '\n' + stacks.map(({ source, line, column }) => `  at ${source}:${line}:${column}`).join('\n')
+  const originalStack = message + '\n' + stacks.map(({ name, source, line, column }) => `  at ${name} (${source}:${line}:${column})`).join('\n')
   const log = useLog();
   log({ meta, stack, originalStack })
 }

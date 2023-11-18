@@ -98,8 +98,13 @@ initialize({
 cd packages/server
 # build
 npm run build
-# default port 6000
-node dist/index.js --port 8080
+# run
+node dist/index.js
+  --port 8000 # default 8000
+  --method POST # default GET
+  --url https://example.com/track
+
+# check log on http://localhost:8000/report.log or http://localhost:8000/report.json
 ```
 
 ## 🔑 Server API
@@ -113,23 +118,28 @@ interface UploadSourceMap {
   query: {
     filename: string;
   };
-  body: File;
-  header: {
-    'Content-Type': 'multipart/form-data';
-  }
+  body: Record<string, string>;
 }
 ```
 
 ### report error information
 
 ```ts
-interface ReportError {
+interface ReportErrorGet {
   method: 'GET';
   url: '/report/error';
   query: {
-    meta: {};
-    error: {};
+    meta: string;
+    stack: string;
   };
+}
+interface ReportErrorPost {
+  method: 'POST';
+  url: '/report/error';
+  body: ArrayBuffer<{
+    meta: string;
+    stack: string;
+  }>;
 }
 ```
 
