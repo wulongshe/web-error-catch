@@ -17,7 +17,7 @@ async function main() {
 
   // 开放public目录
   app.use(({ url }, res, next) => {
-    if (url !== '/report.json') return next()
+    if (url !== '/report.json') return next();
     res.set('Content-Type', 'application/json');
     res.send(readLog());
   });

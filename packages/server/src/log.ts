@@ -11,17 +11,20 @@ interface IReportErrorLog {
 
 const logPath = join(publicPath, 'report.log');
 
-let report: ((log: IReportErrorLog) => Promise<void> | void) | null = null
+let report: ((log: IReportErrorLog) => Promise<void> | void) | null = null;
 
-export function initialize({ method, url }: { method: string, url: string }) {
+export function initialize({ method, url }: { method: string; url: string }) {
   report = async (data: IReportErrorLog) => await axios({ method, url, data });
 }
 
 export function useLog() {
-  return report || ((log: IReportErrorLog) => {
-    if (!existsSync(logPath)) writeFileSync(logPath, '');
-    appendFileSync(logPath, JSON.stringify(log) + ',');
-  });
+  return (
+    report ||
+    ((log: IReportErrorLog) => {
+      if (!existsSync(logPath)) writeFileSync(logPath, '');
+      appendFileSync(logPath, JSON.stringify(log) + ',');
+    })
+  );
 }
 
 export function readLog() {

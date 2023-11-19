@@ -14,5 +14,5 @@ export function writeSourceMaps(maps: Record<string, string>) {
 }
 
 export function readSourceMap(fileName: string) {
-  return readFileSync(join(publicPath, fileName), 'utf8')
+  return readFileSync(join(publicPath, fileName), 'utf8');
 }

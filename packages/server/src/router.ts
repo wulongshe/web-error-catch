@@ -9,7 +9,7 @@ type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
 /* 上报异常 */
 router.get('/report/error', async (req: IRequest<{}, IReportError>, res, next) => {
   const { query } = req;
-  reportError(query)
+  reportError(query);
   res.send({ status: 200, message: 'success' });
   next();
 });
@@ -17,7 +17,7 @@ router.post('/report/error', async (req: IRequest<ArrayBuffer>, res, next) => {
   const { body } = req;
   const json = new TextDecoder('utf-8').decode(body);
   const data = JSON.parse(json);
-  reportError(data)
+  reportError(data);
   res.send({ status: 200, message: 'success' });
   next();
 });

@@ -5,7 +5,7 @@ export interface UploadSourceMapPluginOptions {
   url: string;
 }
 export default class UploadSourceMapPlugin {
-  constructor(private options: UploadSourceMapPluginOptions) { }
+  constructor(private options: UploadSourceMapPluginOptions) {}
   apply(compiler: Compiler) {
     compiler.hooks.emit.tap('UploadSourceMapPlugin', (compilation: Compilation) => {
       const sourceMaps = convertSourceMaps(compilation.assets);
@@ -18,6 +18,6 @@ export function convertSourceMaps(assets: Compilation['assets']): Record<string,
   return Object.fromEntries(
     Object.entries(assets)
       .filter(([name]) => name.endsWith('.map'))
-      .map(([name, asset]) => (delete assets[name], [name, (asset as any)?._value]))
+      .map(([name, asset]) => (delete assets[name], [name, (asset as any)?._value])),
   );
 }
