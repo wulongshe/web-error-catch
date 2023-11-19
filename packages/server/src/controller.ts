@@ -1,4 +1,4 @@
-import { useLog } from './log';
+import { useLog } from './logger';
 import { parseStack } from './parser';
 import { readSourceMap } from './store';
 
