@@ -5,7 +5,6 @@ export function catchError({ meta, url }: Options) {
   window.addEventListener(
     'error',
     (error) => {
-      console.log('error', error);
       send(url, { meta, stack: error.error.stack });
     },
     true,

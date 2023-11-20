@@ -7,6 +7,7 @@ export interface UploadSourceMapPluginOptions {
 export default class UploadSourceMapPlugin {
   constructor(private options: UploadSourceMapPluginOptions) {}
   apply(compiler: Compiler) {
+    if (compiler.options.mode !== 'production') return;
     compiler.hooks.emit.tap('UploadSourceMapPlugin', (compilation: Compilation) => {
       const sourceMaps = convertSourceMaps(compilation.assets);
       axios.post(this.options.url, sourceMaps);
