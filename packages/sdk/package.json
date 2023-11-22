@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shewulong/web-error-catch.git",
+    "url": "git+https://github.com/wulongshe/web-error-catch.git",
     "directory": "packages/sdk"
   },
   "publishConfig": {
