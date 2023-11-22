@@ -142,4 +142,4 @@ interface ReportErrorPost {
 
 ## 📄 License
 
-[MIT License](https://gitlab.com/shewulong/web-error-catch/blob/master/LICENSE.md) © 2023 [shewulong](https://gitlab.com/shewulong)
+[MIT License](https://github.com/shewulong/web-error-catch/blob/master/LICENSE.md) © 2023 [shewulong](https://github.com/shewulong)

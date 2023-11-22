@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2023 shewulong<https://gitlab.com/shewulong>
+Copyright (c) 2023 shewulong<https://github.com/shewulong>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

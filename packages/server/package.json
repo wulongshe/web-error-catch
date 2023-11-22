@@ -8,7 +8,7 @@
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/shewulong/web-error-catch.git",
+    "url": "git+https://github.com/shewulong/web-error-catch.git",
     "directory": "packages/server"
   },
   "publishConfig": {
