@@ -29,5 +29,5 @@ export default {
       url: 'http://localhost:8000/upload/source-map',
     }),
   ],
-  devtool: 'source-map',
+  // devtool: 'source-map',
 };
