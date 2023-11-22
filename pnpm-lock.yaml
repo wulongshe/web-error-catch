@@ -90,6 +90,10 @@ importers:
         version: 4.4.9(@types/node@20.4.7)
 
   packages/plugin-vite:
+    dependencies:
+      axios:
+        specifier: ^1.6.2
+        version: 1.6.2
     devDependencies:
       '@types/node':
         specifier: ^20.9.0
@@ -4870,7 +4874,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.1.0
-      ts-node: 10.9.1(@types/node@20.9.0)(typescript@5.2.2)
+      ts-node: 10.9.1(@types/node@20.4.7)(typescript@5.2.2)
       yaml: 2.3.2
     dev: true
 
