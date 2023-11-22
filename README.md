@@ -13,11 +13,11 @@
 
 ```bash
 # sdk
-npm i @wec/sdk
+npm i @dt-wec/sdk
 # vite plugin
-npm i -D @wec/plugin-vite
+npm i -D @dt-wec/plugin-vite
 # webpack plugin
-npm i -D @wec/plugin-webpack
+npm i -D @dt-wec/plugin-webpack
 ```
 
 ## ⚡ Quick Start Dev
@@ -51,7 +51,7 @@ pnpm ac
 ### plugin webpack
 
 ```ts
-import UploadSourceMapPlugin from '@wec/plugin-webpack';
+import UploadSourceMapPlugin from '@dt-wec/plugin-webpack';
 import type { Configuration } from 'webpack';
 
 const config: Configuration = {
@@ -70,7 +70,7 @@ export default config;
 
 ```ts
 import { defineConfig } from 'vite';
-import UploadSourceMapPlugin from '@wec/plugin-vite';
+import UploadSourceMapPlugin from '@dt-wec/plugin-vite';
 
 export default defineConfig({
   // ...others config
@@ -85,7 +85,7 @@ export default defineConfig({
 ### sdk
 
 ```ts
-import { register } from '@wec/sdk';
+import { register } from '@dt-wec/sdk';
 
 register({
   url: 'https://example.com/report/error',

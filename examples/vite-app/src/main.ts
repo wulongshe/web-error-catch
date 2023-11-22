@@ -2,7 +2,7 @@ import './style.css'
 import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './trigger.ts'
-import { register } from '@wec/sdk';
+import { register } from '@dt-wec/sdk';
 
 register({
   url: 'http://localhost:8000/report/error',

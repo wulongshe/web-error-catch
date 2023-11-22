@@ -13,10 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@wec/sdk": "workspace:*"
+    "@dt-wec/sdk": "workspace:*"
   },
   "devDependencies": {
-    "@wec/plugin-webpack": "workspace:*",
+    "@dt-wec/plugin-webpack": "workspace:*",
     "html-webpack-plugin": "^5.5.3",
     "live-server": "^1.2.2",
     "ts-loader": "^9.5.1",

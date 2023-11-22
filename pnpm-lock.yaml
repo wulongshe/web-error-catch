@@ -44,11 +44,11 @@ importers:
 
   examples/react-app:
     dependencies:
-      '@wec/sdk':
+      '@dt-wec/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
     devDependencies:
-      '@wec/plugin-webpack':
+      '@dt-wec/plugin-webpack':
         specifier: workspace:*
         version: link:../../packages/plugin-webpack
       html-webpack-plugin:
@@ -75,11 +75,11 @@ importers:
 
   examples/vite-app:
     dependencies:
-      '@wec/sdk':
+      '@dt-wec/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
     devDependencies:
-      '@wec/plugin-vite':
+      '@dt-wec/plugin-vite':
         specifier: workspace:*
         version: link:../../packages/plugin-vite
       typescript:

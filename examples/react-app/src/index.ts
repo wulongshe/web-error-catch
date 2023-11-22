@@ -1,4 +1,4 @@
-import { register } from '@wec/sdk';
+import { register } from '@dt-wec/sdk';
 import { setupCounter } from './trigger';
 
 register({

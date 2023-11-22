@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@wec/sdk": "workspace:*"
+    "@dt-wec/sdk": "workspace:*"
   },
   "devDependencies": {
-    "@wec/plugin-vite": "workspace:*",
+    "@dt-wec/plugin-vite": "workspace:*",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }

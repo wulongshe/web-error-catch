@@ -1,5 +1,5 @@
 {
-  "name": "@wec/plugin-webpack",
+  "name": "@dt-wec/plugin-webpack",
   "version": "1.0.0",
   "author": "shewulong",
   "license": "MIT",

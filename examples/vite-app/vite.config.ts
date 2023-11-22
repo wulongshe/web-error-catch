@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import UploadSourceMapPlugin from '@wec/plugin-vite';
+import UploadSourceMapPlugin from '@dt-wec/plugin-vite';
 
 export default defineConfig({
   build: {

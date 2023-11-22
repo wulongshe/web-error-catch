@@ -1,6 +1,6 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import UploadSourceMapPlugin from '@wec/plugin-webpack';
+import UploadSourceMapPlugin from '@dt-wec/plugin-webpack';
 
 export default {
   mode: 'production',
