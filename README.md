@@ -27,15 +27,15 @@ npm i -D @wec/plugin-webpack
 cd web-error-catch
 # install dependencies
 pnpm i
+# build all
+pnpm build
 
 # start react app
 cd examples/react-app
-pnpm build
 pnpm preview
 
-# start vue app
+# or start vue app
 cd examples/vue-app
-pnpm build
 pnpm preview
 
 # start server
@@ -85,9 +85,9 @@ export default defineConfig({
 ### sdk
 
 ```ts
-import { initialize } from '@wec/sdk';
+import { register } from '@wec/sdk';
 
-initialize({
+register({
   url: 'https://example.com/report/error',
 });
 ```

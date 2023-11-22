@@ -1,6 +1,6 @@
 {
   "name": "web-error-catch",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "在无source map的生产环境中，将web error信息交由server端正确处理",
   "scripts": {
     "lint": "eslint",

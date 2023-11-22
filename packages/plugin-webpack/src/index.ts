@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Compilation, Compiler } from 'webpack';
+import type { Compilation, Compiler } from 'webpack';
+import { convertSourceMaps } from './utils.js';
 
 export interface UploadSourceMapPluginOptions {
   url: string;
@@ -16,17 +17,4 @@ export default class UploadSourceMapPlugin {
       axios.post(this.options.url, sourceMaps);
     });
   }
-}
-
-export function convertSourceMaps(assets: Compilation['assets']): Record<string, string> {
-  return Object.fromEntries(
-    Object.entries(assets)
-      .filter(([name]) => name.endsWith('.map'))
-      .map(([name, asset]) => {
-        delete assets[name];
-        const source = JSON.parse((asset as any).source());
-        delete source['sourcesContent'];
-        return [name, JSON.stringify(source)];
-      }),
-  );
 }
