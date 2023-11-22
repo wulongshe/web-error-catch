@@ -115,10 +115,7 @@ node dist/index.js
 interface UploadSourceMap {
   method: 'POST';
   url: '/upload/source-map';
-  query: {
-    filename: string;
-  };
-  body: Record<string, string>;
+  body: { [filename: string]: string }
 }
 ```
 
