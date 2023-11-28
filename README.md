@@ -54,7 +54,7 @@ pnpm ac
 import UploadSourceMapPlugin from '@dt-wec/plugin-webpack';
 import type { Configuration } from 'webpack';
 
-const config: Configuration = {
+export default <Configuration>{
   // ...others config
   plugins: [
     new UploadSourceMapPlugin({
@@ -62,8 +62,6 @@ const config: Configuration = {
     }),
   ],
 };
-
-export default config;
 ```
 
 ### plugin vite
