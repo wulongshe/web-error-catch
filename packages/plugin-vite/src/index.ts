@@ -16,7 +16,7 @@ export default function uploadSourceMapPlugin(options: UploadSourceMapOptions): 
       if (!options.force && config.mode !== 'production') return;
       isProduction = true;
       // 开启 sourcemap
-      config.build.sourcemap = true;
+      config.build.sourcemap = 'hidden';
     },
     generateBundle(_, bundle) {
       if (!options.force && !isProduction) return;

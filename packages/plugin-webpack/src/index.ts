@@ -10,7 +10,7 @@ export default class UploadSourceMapPlugin {
   constructor(private options: UploadSourceMapPluginOptions) {}
   apply(compiler: Compiler) {
     if (!this.options.force && compiler.options.mode !== 'production') return;
-    compiler.options.devtool = 'source-map';
+    compiler.options.devtool = 'hidden-source-map';
 
     compiler.hooks.emit.tap('UploadSourceMapPlugin', (compilation: Compilation) => {
       const sourceMaps = convertSourceMaps(compilation.assets);
