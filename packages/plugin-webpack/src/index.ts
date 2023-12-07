@@ -14,7 +14,10 @@ export default class UploadSourceMapPlugin {
 
     compiler.hooks.emit.tap('UploadSourceMapPlugin', (compilation: Compilation) => {
       const sourceMaps = convertSourceMaps(compilation.assets);
-      axios.post(this.options.url, sourceMaps);
+      Object.entries(sourceMaps).forEach(([key, value]) => {
+        axios.post(this.options.url, { [key]: value });
+      });
+      // axios.post(this.options.url, sourceMaps);
     });
   }
 }
