@@ -13,7 +13,7 @@ export default class UploadSourceMapPlugin {
 
     compiler.hooks.emit.tap('UploadSourceMapPlugin', (compilation: Compilation) => {
       const sourceMaps = convertSourceMaps(compilation.assets);
-      Object.entries(sourceMaps).forEach(([key, value]) => {
+      sourceMaps.forEach(([key, value]) => {
         uploadFile(this.options.url, key, value)
           .then(() => console.log(`Success upload ${key}`))
           .catch(() => console.error(`Failed upload ${key}`));

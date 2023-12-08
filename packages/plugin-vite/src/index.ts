@@ -22,7 +22,7 @@ export default function uploadSourceMapPlugin(options: UploadSourceMapOptions): 
       // 筛选出 sourcemap
       const sourceMaps = convertSourceMaps(bundle);
       // 上传 sourcemap
-      Object.entries(sourceMaps).forEach(([key, value]) => {
+      sourceMaps.forEach(([key, value]) => {
         uploadFile(options.url, key, value)
           .then(() => console.log(`Success upload ${key}`))
           .catch(() => console.error(`Failed upload ${key}`));

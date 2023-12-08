@@ -38,9 +38,12 @@ test('convertSourceMaps', async () => {
 
   const sourceMaps = convertSourceMaps(assets);
 
-  expect(sourceMaps).toEqual({
-    'main.b5517e4f0908ffb38333.js.map': `{"version":3,"file":"main.b5517e4f0908ffb38333.js","mappings":"mBAAO,IAAsBA,ECC7BC,SAASC,cAAc,QAAQC,UAAY,iHDDdH,ECEhBC,SAASC,cAAc,aDDxBC,UAAY,gBACpBH,EAAQI,iBAAiB,SAAS,WAC9B,MAAM,IAAIC,MAAM,gBACpB,G","sources":["webpack://react-app/./src/counter.ts","webpack://react-app/./src/index.ts"],"names":["element","document","querySelector","innerHTML","addEventListener","Error"],"sourceRoot":""}`,
-  });
+  expect(sourceMaps).toEqual([
+    [
+      'main.b5517e4f0908ffb38333.js.map',
+      `{"version":3,"file":"main.b5517e4f0908ffb38333.js","mappings":"mBAAO,IAAsBA,ECC7BC,SAASC,cAAc,QAAQC,UAAY,iHDDdH,ECEhBC,SAASC,cAAc,aDDxBC,UAAY,gBACpBH,EAAQI,iBAAiB,SAAS,WAC9B,MAAM,IAAIC,MAAM,gBACpB,G","sources":["webpack://react-app/./src/counter.ts","webpack://react-app/./src/index.ts"],"names":["element","document","querySelector","innerHTML","addEventListener","Error"],"sourceRoot":""}`,
+    ],
+  ]);
 
   expect(assets).toEqual({
     'main.b5517e4f0908ffb38333.js': {
