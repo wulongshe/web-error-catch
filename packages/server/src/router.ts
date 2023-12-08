@@ -7,7 +7,7 @@ const router = express.Router();
 type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
 
 /* 上报异常 */
-router.get('/report/error', express.raw({ type: '*/*' }), async (req: IRequest<{}, IReportError>, res, next) => {
+router.get('/report/error', async (req: IRequest<{}, IReportError>, res, next) => {
   const { query } = req;
   reportError(query);
   res.send({ status: 200, message: 'success' });
