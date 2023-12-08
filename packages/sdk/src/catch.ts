@@ -15,7 +15,7 @@ export function catchUnhandledrejection({ meta, url }: Options) {
   window.addEventListener(
     'unhandledrejection',
     (event) => {
-      console.log('unhandledrejection', event);
+      // console.log('unhandledrejection', event);
     },
     true,
   );

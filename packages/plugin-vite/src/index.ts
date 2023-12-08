@@ -1,6 +1,5 @@
-import axios from 'axios';
 import type { Plugin } from 'vite';
-import { convertSourceMaps } from './utils.js';
+import { convertSourceMaps, uploadFile } from './utils.js';
 
 export interface UploadSourceMapOptions {
   url: string;
@@ -23,7 +22,11 @@ export default function uploadSourceMapPlugin(options: UploadSourceMapOptions): 
       // 筛选出 sourcemap
       const sourceMaps = convertSourceMaps(bundle);
       // 上传 sourcemap
-      axios.post(options.url, sourceMaps);
+      Object.entries(sourceMaps).forEach(([key, value]) => {
+        uploadFile(options.url, key, value)
+          .then(() => console.log(`Success upload ${key}`))
+          .catch(() => console.error(`Failed upload ${key}`));
+      });
     },
   };
 }

@@ -1,6 +1,5 @@
-import axios from 'axios';
 import type { Compilation, Compiler } from 'webpack';
-import { convertSourceMaps } from './utils.js';
+import { convertSourceMaps, uploadFile } from './utils.js';
 
 export interface UploadSourceMapPluginOptions {
   url: string;
@@ -15,9 +14,10 @@ export default class UploadSourceMapPlugin {
     compiler.hooks.emit.tap('UploadSourceMapPlugin', (compilation: Compilation) => {
       const sourceMaps = convertSourceMaps(compilation.assets);
       Object.entries(sourceMaps).forEach(([key, value]) => {
-        axios.post(this.options.url, { [key]: value });
+        uploadFile(this.options.url, key, value)
+          .then(() => console.log(`Success upload ${key}`))
+          .catch(() => console.error(`Failed upload ${key}`));
       });
-      // axios.post(this.options.url, sourceMaps);
     });
   }
 }

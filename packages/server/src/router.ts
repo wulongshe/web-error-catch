@@ -1,19 +1,19 @@
 import express, { type Request } from 'express';
 import { IReportError, reportError } from './controller';
-import { writeSourceMaps } from './store';
+import { upload } from './store';
 
 const router = express.Router();
 
 type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
 
 /* 上报异常 */
-router.get('/report/error', async (req: IRequest<{}, IReportError>, res, next) => {
+router.get('/report/error', express.raw({ type: '*/*' }), async (req: IRequest<{}, IReportError>, res, next) => {
   const { query } = req;
   reportError(query);
   res.send({ status: 200, message: 'success' });
   next();
 });
-router.post('/report/error', async (req: IRequest<ArrayBuffer>, res, next) => {
+router.post('/report/error', express.raw({ type: '*/*' }), async (req: IRequest<ArrayBuffer>, res, next) => {
   const { body } = req;
   const json = new TextDecoder('utf-8').decode(body);
   const data = JSON.parse(json);
@@ -23,9 +23,8 @@ router.post('/report/error', async (req: IRequest<ArrayBuffer>, res, next) => {
 });
 
 /* 上传source map */
-router.post('/upload/source-map', async (req: IRequest<Record<string, string>>, res, next) => {
-  const { body } = req;
-  writeSourceMaps(body);
+router.post('/upload/source-map', upload.single('file'), async (req, res, next) => {
+  console.log('upload source map', req.file?.filename);
   res.send({ status: 200, message: 'success' });
   next();
 });

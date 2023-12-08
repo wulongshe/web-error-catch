@@ -1,3 +1,5 @@
+import axios from 'axios';
+import FormData from 'form-data';
 import type { Compilation } from 'webpack';
 
 export function convertSourceMaps(assets: Compilation['assets']): Record<string, string> {
@@ -11,4 +13,15 @@ export function convertSourceMaps(assets: Compilation['assets']): Record<string,
         return [name, JSON.stringify(source)];
       }),
   );
+}
+
+export function uploadFile(url: string, filename: string, content: string) {
+  const formData = new FormData();
+  formData.append('file', content, { filename });
+  return axios({
+    method: 'POST',
+    url,
+    data: formData,
+    headers: formData.getHeaders(),
+  });
 }

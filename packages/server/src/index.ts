@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import express from 'express';
 import { command } from './command';
 import { initialize, readLog } from './logger';
@@ -26,8 +25,6 @@ async function main() {
   // 配置插件
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
-  // 解析二进制数据
-  app.use(bodyParser.raw({ type: '*/*' }));
 
   // 配置路由
   app.use(router);
