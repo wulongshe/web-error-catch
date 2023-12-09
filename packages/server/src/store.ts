@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync } from 'fs';
 import multer from 'multer';
 import { join, resolve } from 'path';
 
