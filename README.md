@@ -113,7 +113,8 @@ node dist/index.js
 interface UploadSourceMap {
   method: 'POST';
   url: '/upload/source-map';
-  body: { [filename: string]: string }
+  body: FormData;
+  headers: { 'content-type': 'multipart/form-data' };
 }
 ```
 
