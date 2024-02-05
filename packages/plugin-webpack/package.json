@@ -31,6 +31,8 @@
     "prettier": "prettier -c --write \"src/**/*\" \"test/**/*\"",
     "upload": "npm run test && npm run build && npm publish --access public",
     "build": "tsup src/index.ts --dts --format cjs,esm --minify --clean",
+    "watch": "npm run build -- --watch src",
+    "prepublishOnly": "npm run build",
     "test": "vitest run"
   },
   "files": [

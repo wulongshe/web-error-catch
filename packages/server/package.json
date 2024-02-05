@@ -19,6 +19,8 @@
     "build": "tsup src/index.ts --format cjs --clean",
     "dev": "nodemon --exec ts-node src/index.ts",
     "preview": "npm run build && node dist/index.js",
+    "watch": "npm run build -- --watch src",
+    "prepublishOnly": "npm run build",
     "test": "vitest run"
   },
   "files": [],
