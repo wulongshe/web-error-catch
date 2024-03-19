@@ -42,7 +42,23 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  examples/react-app:
+  examples/vite-app:
+    dependencies:
+      '@dt-wec/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
+    devDependencies:
+      '@dt-wec/plugin-vite':
+        specifier: workspace:*
+        version: link:../../packages/plugin-vite
+      typescript:
+        specifier: ^5.0.2
+        version: 5.2.2
+      vite:
+        specifier: ^4.4.5
+        version: 4.4.9(@types/node@20.4.7)
+
+  examples/webpack-app:
     dependencies:
       '@dt-wec/sdk':
         specifier: workspace:*
@@ -72,22 +88,6 @@ importers:
       webpack-dev-server:
         specifier: ^4.15.1
         version: 4.15.1(webpack-cli@5.1.4)(webpack@5.89.0)
-
-  examples/vite-app:
-    dependencies:
-      '@dt-wec/sdk':
-        specifier: workspace:*
-        version: link:../../packages/sdk
-    devDependencies:
-      '@dt-wec/plugin-vite':
-        specifier: workspace:*
-        version: link:../../packages/plugin-vite
-      typescript:
-        specifier: ^5.0.2
-        version: 5.2.2
-      vite:
-        specifier: ^4.4.5
-        version: 4.4.9(@types/node@20.4.7)
 
   packages/plugin-vite:
     dependencies:
@@ -4902,7 +4902,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.1.0
-      ts-node: 10.9.1(@types/node@20.9.0)(typescript@5.2.2)
+      ts-node: 10.9.1(@types/node@20.4.7)(typescript@5.2.2)
       yaml: 2.3.2
     dev: true
 
