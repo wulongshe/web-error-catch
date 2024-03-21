@@ -4,6 +4,7 @@
   "description": "在无source map的生产环境中，将web error信息交由server端正确处理",
   "author": "shewulong",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "lint": "eslint",
     "lint:fix": "eslint --fix",
