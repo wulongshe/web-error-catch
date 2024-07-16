@@ -58,7 +58,7 @@ export default <Configuration>{
   // ...others config
   plugins: [
     new UploadSourceMapPlugin({
-      url: 'https://example.com/upload/source-map',
+      url: 'https://example.com/upload',
     }),
   ],
 };
@@ -74,7 +74,7 @@ export default defineConfig({
   // ...others config
   plugins: [
     UploadSourceMapPlugin({
-      url: 'https://example.com/upload/source-map',
+      url: 'https://example.com/upload',
     }),
   ],
 });
@@ -86,7 +86,7 @@ export default defineConfig({
 import { register } from '@dt-wec/sdk';
 
 register({
-  url: 'https://example.com/report/error',
+  url: 'https://example.com/report',
 });
 ```
 
@@ -102,7 +102,7 @@ node dist/index.js
   --method POST # default GET
   --url https://example.com/track
 
-# check log on http://localhost:8000/report.log or http://localhost:8000/report.json
+# check log on http://localhost:8080/report.log or http://localhost:8080/report.json
 ```
 
 ## 🔑 Server API
@@ -112,7 +112,7 @@ node dist/index.js
 ```ts
 interface UploadSourceMap {
   method: 'POST';
-  url: '/upload/source-map';
+  url: '/upload';
   body: FormData;
   headers: { 'content-type': 'multipart/form-data' };
 }
@@ -121,21 +121,39 @@ interface UploadSourceMap {
 ### report error information
 
 ```ts
+interface ReportErrorParams {
+  meta?: string;
+  stack: string;
+}
 interface ReportErrorGet {
   method: 'GET';
-  url: '/report/error';
-  query: {
-    meta: string;
-    stack: string;
-  };
+  url: '/report';
+  query: ReportErrorParams;
 }
 interface ReportErrorPost {
   method: 'POST';
-  url: '/report/error';
-  body: ArrayBuffer<{
-    meta: string;
-    stack: string;
-  }>;
+  url: '/report';
+  body: ArrayBuffer<ReportErrorParams>;
+}
+```
+
+### transform error information
+
+```ts
+interface TransformErrorParams {
+  data: string;
+  stack_path: string;
+  forward_url: string;
+}
+interface TransformErrorGet {
+  method: 'GET';
+  url: '/transform';
+  query: TransformErrorParams;
+}
+interface TransformErrorPost {
+  method: 'POST';
+  url: '/transform';
+  body: ArrayBuffer<TransformErrorParams>;
 }
 ```
 

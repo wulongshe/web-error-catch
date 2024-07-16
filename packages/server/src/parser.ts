@@ -1,4 +1,4 @@
-import { SourceMapConsumer } from 'source-map';
+import { SourceMapConsumer, type NullableMappedPosition } from 'source-map';
 
 export async function parseStack(stack: string, readSourceMap: (fileName: string) => string | Promise<string>) {
   const regexp = /at\s+.+\/(.+):(\d+):(\d+)/;
@@ -19,5 +19,8 @@ export async function parseStack(stack: string, readSourceMap: (fileName: string
     }),
   );
 
-  return { message, stacks: stacks.filter(Boolean) as NonNullable<(typeof stacks)[number]>[] };
+  const lines = (stacks.filter(Boolean) as NullableMappedPosition[]).map(({ name, source, line, column }) =>
+    name ? `at ${name} (${source}:${line}:${column})` : `at ${source}:${line}:${column}`,
+  );
+  return message + '\n  ' + lines.join('\n  ');
 }

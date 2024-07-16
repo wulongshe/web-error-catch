@@ -26,7 +26,7 @@ export default {
       template: 'index.html',
     }),
     new UploadSourceMapPlugin({
-      url: 'http://localhost:8000/upload/source-map',
+      url: 'http://localhost:8080/upload',
     }),
   ],
   // devtool: 'source-map',

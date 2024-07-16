@@ -39,7 +39,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=14.20.0"
+    "node": ">=18.12.0"
   },
   "devDependencies": {
     "@types/node": "^20.9.0",

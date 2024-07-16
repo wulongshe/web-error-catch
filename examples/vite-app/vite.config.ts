@@ -7,7 +7,7 @@ export default defineConfig({
   },
   plugins: [
     UploadSourceMapPlugin({
-      url: 'http://localhost:8000/upload/source-map',
+      url: 'http://localhost:8080/upload',
     }),
   ],
 });

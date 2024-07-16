@@ -1,15 +1,14 @@
 import express from 'express';
 import { command } from './command';
-import { initialize, readLog } from './logger';
+import { readLog } from './logger';
 import router from './router';
 import { publicPath } from './store';
 
 async function main() {
   // 获取命令行参数
-  const { port, method, url } = await command();
+  const { port } = await command();
 
   // 初始化日志
-  if (url) initialize({ method, url });
 
   // 生成app实例
   const app = express();

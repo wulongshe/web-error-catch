@@ -1,11 +1,11 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './trigger.ts'
+import './style.css';
+import typescriptLogo from './typescript.svg';
+import viteLogo from '/vite.svg';
+import { setupCounter } from './trigger.ts';
 import { register } from '@dt-wec/sdk';
 
 register({
-  url: 'http://localhost:8000/report/error',
+  url: 'http://localhost:8080/report',
 });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -24,6 +24,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       Click on the Vite and TypeScript logos to learn more
     </p>
   </div>
-`
+`;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#trigger')!)
+setupCounter(document.querySelector<HTMLButtonElement>('#trigger')!);
