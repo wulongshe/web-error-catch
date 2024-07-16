@@ -1,6 +1,6 @@
 {
   "name": "@dt-wec/server",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "shewulong",
   "license": "MIT",
   "description": "",
@@ -20,9 +20,16 @@
     "build:watch": "npm run build -- --watch src",
     "preview": "npm run build && node dist/index.js",
     "dev": "npm run build:watch & nodemon dist/index.js",
+    "prepublishOnly": "npm run test && npm run build",
     "test": "vitest run"
   },
-  "files": [],
+  "bin": {
+    "wec": "bin/wec.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "engines": {
     "node": ">=18.12.0"
   },

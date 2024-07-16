@@ -141,7 +141,7 @@ interface ReportErrorPost {
 
 ```ts
 interface TransformErrorParams {
-  data: string;
+  data: Record<any, any>;
   stack_path: string;
   forward_url: string;
 }
