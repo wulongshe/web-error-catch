@@ -12,3 +12,11 @@ export class Accessor<T extends Record<any, any>> {
     keys.reduce((obj, key) => obj[key], this.value)[last_key as keyof T] = value;
   }
 }
+
+export function debounce(func: () => void, wait: number) {
+  let timeout: NodeJS.Timeout;
+  return () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(func, wait);
+  };
+}

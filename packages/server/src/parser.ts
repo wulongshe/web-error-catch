@@ -1,18 +1,39 @@
-import { SourceMapConsumer, type NullableMappedPosition } from 'source-map';
+import {
+  SourceMapConsumer,
+  type BasicSourceMapConsumer,
+  type IndexedSourceMapConsumer,
+  type NullableMappedPosition,
+} from 'source-map';
+import { readSourceMap } from './store';
+import { debounce } from './utils';
 
-export async function parseStack(stack: string, readSourceMap: (fileName: string) => string | Promise<string>) {
+const consumerMap = new Map<string, BasicSourceMapConsumer | IndexedSourceMapConsumer>();
+const destroyMap = new Map<string, () => void>();
+
+async function getConsumer(sourcemap: string) {
+  if (consumerMap.has(sourcemap)) {
+    destroyMap.get(sourcemap)!();
+    return consumerMap.get(sourcemap)!;
+  }
+  const consumer = await new SourceMapConsumer(readSourceMap(sourcemap));
+  const destroy = debounce(() => (consumerMap.delete(sourcemap), consumer.destroy()), 60 * 60 * 1000);
+  consumerMap.set(sourcemap, consumer);
+  destroyMap.set(sourcemap, destroy);
+  destroy();
+  return consumer;
+}
+
+export async function parseStack(stack: string) {
   const regexp = /at\s+.+\/(.+):(\d+):(\d+)/;
   const [message, ...frames] = stack.split('\n');
 
   const matchArr = frames.map((frame) => frame.match(regexp)).filter(Boolean) as RegExpMatchArray[];
   const stacks = await Promise.all(
     matchArr.map(async ([, source, line, column]) => {
+      const sourcemap = `${source}.map`;
       try {
-        const sourceMap = await readSourceMap(`${source}.map`);
-        const consumer = await new SourceMapConsumer(sourceMap);
-        const result = consumer.originalPositionFor({ line: Number(line), column: Number(column) });
-        consumer.destroy();
-        return result;
+        const consumer = await getConsumer(sourcemap);
+        return consumer.originalPositionFor({ line: Number(line), column: Number(column) });
       } catch {
         return null;
       }
@@ -23,4 +44,12 @@ export async function parseStack(stack: string, readSourceMap: (fileName: string
     name ? `at ${name} (${source}:${line}:${column})` : `at ${source}:${line}:${column}`,
   );
   return message + '\n  ' + lines.join('\n  ');
+}
+
+/** 仅test使用 */
+export async function __set_consumer_map__(sourcemap: string, content: string, wait: number) {
+  const consumer = await new SourceMapConsumer(content);
+  const destroy = debounce(() => (consumerMap.delete(sourcemap), consumer.destroy()), wait);
+  consumerMap.set(sourcemap, consumer);
+  destroyMap.set(sourcemap, destroy);
 }

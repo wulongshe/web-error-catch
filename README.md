@@ -98,7 +98,7 @@ cd packages/server
 npm run build
 # run
 node dist/index.js
-  --port 8000 # default 8000
+  --port 8080 # default 8080
   --method POST # default GET
   --url https://example.com/track
 
