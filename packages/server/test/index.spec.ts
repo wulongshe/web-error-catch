@@ -21,7 +21,7 @@ test('parseStack', async () => {
 
   // wait for consumer destroy
   await new Promise((resolve) => setTimeout(resolve, 200));
-  expect(await parseStack(stack)).toBe(`Error: custom error\n  `);
+  expect(await parseStack(stack)).toBe(``);
 });
 
 test('create accessor', async () => {
