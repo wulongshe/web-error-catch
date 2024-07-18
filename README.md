@@ -133,7 +133,8 @@ interface ReportErrorGet {
 interface ReportErrorPost {
   method: 'POST';
   url: '/report';
-  body: ArrayBuffer<ReportErrorParams>;
+  headers: { 'Content-Type': 'text/plain;charset=UTF-8' };
+  body: ReportErrorParams;
 }
 ```
 
@@ -141,7 +142,7 @@ interface ReportErrorPost {
 
 ```ts
 interface TransformErrorParams {
-  data: Record<any, any>;
+  data: any;
   stack_path: string;
   forward_url: string;
 }
@@ -153,7 +154,14 @@ interface TransformErrorGet {
 interface TransformErrorPost {
   method: 'POST';
   url: '/transform';
-  body: ArrayBuffer<TransformErrorParams>;
+  headers: { 'Content-Type': 'text/plain;charset=UTF-8' };
+  body: TransformErrorParams;
+}
+interface BatchTransformErrorPost {
+  method: 'POST';
+  url: '/transform-batch';
+  headers: { 'Content-Type': 'text/plain;charset=UTF-8' };
+  body: string[];
 }
 ```
 

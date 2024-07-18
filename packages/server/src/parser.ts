@@ -43,6 +43,7 @@ export async function parseStack(stack: string) {
   const lines = (stacks.filter(Boolean) as NullableMappedPosition[]).map(({ name, source, line, column }) =>
     name ? `at ${name} (${source}:${line}:${column})` : `at ${source}:${line}:${column}`,
   );
+  if (!lines.length) return '';
   return message + '\n  ' + lines.join('\n  ');
 }
 
