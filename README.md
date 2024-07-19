@@ -18,6 +18,8 @@ npm i @dt-wec/sdk
 npm i -D @dt-wec/plugin-vite
 # webpack plugin
 npm i -D @dt-wec/plugin-webpack
+# server
+npm i -g @dt-wec/server
 ```
 
 ## ⚡ Quick Start Dev
@@ -93,14 +95,7 @@ register({
 ### server
 
 ```bash
-cd packages/server
-# build
-npm run build
-# run
-node dist/index.js
-  --port 8080 # default 8080
-  --method POST # default GET
-  --url https://example.com/track
+wec --port 8080 # default 8080
 
 # check log on http://localhost:8080/report.log or http://localhost:8080/report.json
 ```
