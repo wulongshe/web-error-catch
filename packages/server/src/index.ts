@@ -1,15 +1,11 @@
 import express from 'express';
-import { command } from './command';
 import { readLog } from './logger';
 import router from './router';
 import { publicPath } from './store';
 
+const PORT = 8080;
+
 async function main() {
-  // 获取命令行参数
-  const { port } = await command();
-
-  // 初始化日志
-
   // 生成app实例
   const app = express();
 
@@ -29,8 +25,8 @@ async function main() {
   app.use(router);
 
   // 开启服务，监听端口
-  app.listen(port, () => {
-    console.log(`listening on port ${port}`);
+  app.listen(PORT, () => {
+    console.log(`listening on port ${PORT}`);
   });
 }
 
