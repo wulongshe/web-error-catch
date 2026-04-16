@@ -2,6 +2,7 @@ import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { saveUploadRecord, getRecordsToDelete, markAsDeleted } from '#src/database/index.ts';
 import { publicPath } from './store.ts';
+import { logger } from '#src/logger.ts';
 
 export interface UploadParams {
   project?: string;
@@ -42,7 +43,7 @@ async function cleanupOldFiles(project: string) {
       await rm(filePath, { force: true });
       markAsDeleted(record.id);
     } catch (error) {
-      console.error(`Failed to delete file: ${filePath}`, error);
+      logger.error(`Failed to delete file: ${filePath}`, error);
     }
   }
 }

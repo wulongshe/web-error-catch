@@ -1,6 +1,7 @@
 import express from 'express';
 import router from '#src/router.ts';
 import { publicPath } from '#src/controller/index.ts';
+import { logger } from '#src/logger.ts';
 
 const PORT = Number(process.env.PORT) || 8080;
 
@@ -20,7 +21,7 @@ async function main() {
 
   // 开启服务，监听端口
   app.listen(PORT, () => {
-    console.log(`listening on http://127.0.0.1:${PORT}`);
+    logger.info(`Server listening on http://127.0.0.1:${PORT}`);
   });
 }
 
