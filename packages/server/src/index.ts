@@ -1,9 +1,9 @@
 import express from 'express';
-import { readLog } from './logger';
-import router from './router';
-import { publicPath } from './store';
+import { readLog } from '#src/logger.ts';
+import router from '#src/router.ts';
+import { publicPath } from '#src/store.ts';
 
-const PORT = 8080;
+const PORT = Number(process.env.PORT) || 8080;
 
 async function main() {
   // 生成app实例
@@ -26,7 +26,7 @@ async function main() {
 
   // 开启服务，监听端口
   app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}`);
+    console.log(`listening on http://127.0.0.1:${PORT}`);
   });
 }
 

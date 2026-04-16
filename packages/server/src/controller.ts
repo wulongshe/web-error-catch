@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { writLog } from './logger';
-import { parseStack } from './parser';
-import { Accessor } from './utils';
+import { writLog } from '#src/logger.ts';
+import { parseStack } from '#src/parser.ts';
+import { Accessor } from '#src/utils.ts';
 
 export interface ReportErrorParams {
   meta?: string;

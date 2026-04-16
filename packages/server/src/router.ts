@@ -1,11 +1,16 @@
 import express, { type Request } from 'express';
-import { forward, reportError, transformError, type ReportErrorParams, type TransformErrorParams } from './controller';
-import { upload } from './store';
-import { parseStack } from './parser';
+import { forward, reportError, transformError, type ReportErrorParams, type TransformErrorParams } from '#src/controller.ts';
+import { upload } from '#src/store.ts';
+import { parseStack } from '#src/parser.ts';
 
 const router = express.Router();
 
 type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
+
+/** 测试接口 */
+router.get('/test', (req, res) => {
+  res.json({ status: 200, message: 'ok' });
+});
 
 /** 上报异常 */
 router.get('/report', async (req: IRequest<{}, ReportErrorParams>, res, next) => {

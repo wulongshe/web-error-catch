@@ -1,5 +1,8 @@
 export class Accessor<T extends Record<any, any>> {
-  constructor(public value: T) {}
+  public value: T;
+  constructor(value: T) {
+    this.value = value;
+  }
   get(path: string) {
     const keys = path.split('.');
     const value = keys.reduce((obj, key) => obj[key], this.value);

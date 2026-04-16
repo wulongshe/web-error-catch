@@ -1,6 +1,7 @@
-import { expect, test } from 'vitest';
-import { __set_consumer_map__, parseStack } from '../src/parser.js';
-import { Accessor } from '../src/utils.js';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { __set_consumer_map__, parseStack } from '#src/parser.ts';
+import { Accessor } from '#src/utils.ts';
 
 test('parseStack', async () => {
   const stack = `Error: custom error
@@ -15,25 +16,25 @@ test('parseStack', async () => {
 
   const stacks = await parseStack(stack);
 
-  expect(stacks).toBe(`Error: custom error
+  assert.strictEqual(stacks, `Error: custom error
   at webpack://react-app/src/trigger.ts:10:10
   at func2 (webpack://react-app/src/trigger.ts:6:4)`);
 
   // wait for consumer destroy
   await new Promise((resolve) => setTimeout(resolve, 200));
-  expect(await parseStack(stack)).toBe(``);
+  assert.strictEqual(await parseStack(stack), ``);
 });
 
-test('create accessor', async () => {
+test('create accessor', () => {
   const data = { a: { b: { d: ['d1', 'd2'], e: 1 }, c: 'c' } };
   const stack_path = 'a.b.d.0';
   const accessor = new Accessor(data);
 
-  expect(accessor.get(stack_path)).toBe('d1');
+  assert.strictEqual(accessor.get(stack_path), 'd1');
 
   accessor.set(stack_path, 'd3');
 
-  expect(accessor.get(stack_path)).toBe('d3');
+  assert.strictEqual(accessor.get(stack_path), 'd3');
 
-  expect(accessor.value).toEqual({ a: { b: { d: ['d3', 'd2'], e: 1 }, c: 'c' } });
+  assert.deepStrictEqual(accessor.value, { a: { b: { d: ['d3', 'd2'], e: 1 }, c: 'c' } });
 });

@@ -4,8 +4,8 @@ import {
   type IndexedSourceMapConsumer,
   type NullableMappedPosition,
 } from 'source-map';
-import { readSourceMap } from './store';
-import { debounce } from './utils';
+import { readSourceMap } from '#src/store.ts';
+import { debounce } from '#src/utils.ts';
 
 const consumerMap = new Map<string, BasicSourceMapConsumer | IndexedSourceMapConsumer>();
 const destroyMap = new Map<string, () => void>();

@@ -1,6 +1,6 @@
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { publicPath } from './store';
+import { publicPath } from '#src/store.ts';
 
 interface ReportErrorParamsLog {
   meta?: string;
