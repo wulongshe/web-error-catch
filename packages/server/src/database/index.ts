@@ -28,10 +28,12 @@ db.exec(`
     project TEXT NOT NULL,
     timestamp INTEGER NOT NULL,
     filename TEXT NOT NULL,
-    created_at INTEGER NOT NULL
+    created_at INTEGER NOT NULL,
+    deleted INTEGER DEFAULT 0
   );
 
   CREATE INDEX IF NOT EXISTS idx_upload_timestamp ON uploads(timestamp);
+  CREATE INDEX IF NOT EXISTS idx_upload_project ON uploads(project);
 `);
 
 export interface ErrorReport {
@@ -129,4 +131,30 @@ export function getUploadRecords(limit = 100, offset = 0) {
  */
 export function clearUploadRecords() {
   db.exec('DELETE FROM uploads');
+}
+
+/**
+ * 获取项目需要删除的上传记录
+ */
+export function getRecordsToDelete(project: string, keepCount: number = 3) {
+  const stmt = db.prepare(`
+    SELECT id, filename, timestamp
+    FROM uploads
+    WHERE project = ? AND deleted = 0
+    ORDER BY timestamp DESC
+    LIMIT -1 OFFSET ?
+  `);
+  return stmt.all(project, keepCount) as Array<{
+    id: number;
+    filename: string;
+    timestamp: number;
+  }>;
+}
+
+/**
+ * 标记上传记录为已删除
+ */
+export function markAsDeleted(id: number) {
+  const stmt = db.prepare('UPDATE uploads SET deleted = 1 WHERE id = ?');
+  stmt.run(id);
 }
