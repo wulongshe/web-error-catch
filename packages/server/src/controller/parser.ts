@@ -4,7 +4,7 @@ import {
   type IndexedSourceMapConsumer,
   type NullableMappedPosition,
 } from 'source-map';
-import { readSourceMap } from '#src/store.ts';
+import { readSourceMap } from './store.ts';
 import { debounce } from '#src/utils.ts';
 
 const consumerMap = new Map<string, BasicSourceMapConsumer | IndexedSourceMapConsumer>();

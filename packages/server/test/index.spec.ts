@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { __set_consumer_map__, parseStack } from '#src/parser.ts';
+import { __set_consumer_map__, parseStack } from '#src/controller/parser.ts';
 
 test('parseStack', async () => {
   const stack = `Error: custom error

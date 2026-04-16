@@ -1,10 +1,13 @@
 import express, { type Request } from 'express';
-import { reportError, type ReportErrorParams } from '#src/controller.ts';
-import { upload } from '#src/store.ts';
+import { parseStack, upload } from '#src/controller/index.ts';
 
 const router = express.Router();
 
 type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
+
+interface ReportParams {
+  stack: string;
+}
 
 /** 测试接口 */
 router.get('/test', (req, res) => {
@@ -12,17 +15,14 @@ router.get('/test', (req, res) => {
 });
 
 /** 上报异常 */
-router.get('/report', async (req: IRequest<{}, ReportErrorParams>, res, next) => {
-  const { query } = req;
-  reportError(query);
+router.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
+  parseStack(req.query.stack);
   res.send({ status: 200, message: 'success' });
   next();
 });
 router.post('/report', express.raw({ type: '*/*' }), async (req: IRequest<ArrayBuffer>, res, next) => {
-  const { body } = req;
-  const json = new TextDecoder('utf-8').decode(body);
-  const data = JSON.parse(json) as ReportErrorParams;
-  reportError(data);
+  const data = JSON.parse(new TextDecoder('utf-8').decode(req.body)) as ReportParams;
+  parseStack(data.stack);
   res.send({ status: 200, message: 'success' });
   next();
 });

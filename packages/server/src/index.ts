@@ -1,7 +1,6 @@
 import express from 'express';
-import { readLog } from '#src/logger.ts';
 import router from '#src/router.ts';
-import { publicPath } from '#src/store.ts';
+import { publicPath } from '#src/controller/index.ts';
 
 const PORT = Number(process.env.PORT) || 8080;
 
@@ -10,11 +9,6 @@ async function main() {
   const app = express();
 
   // 开放public目录
-  app.use(({ url }, res, next) => {
-    if (url !== '/report.json') return next();
-    res.set('Content-Type', 'application/json');
-    res.send(readLog());
-  });
   app.use(express.static(publicPath));
 
   // 配置插件
