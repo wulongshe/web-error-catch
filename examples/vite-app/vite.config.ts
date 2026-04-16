@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import UploadSourceMapPlugin from '@dt-wec/plugin-vite';
 
 export default defineConfig({
@@ -7,7 +7,8 @@ export default defineConfig({
   },
   plugins: [
     UploadSourceMapPlugin({
-      url: 'http://localhost:8080/upload',
-    }),
+      url: 'http://localhost:3000/upload',
+      project: 'vite-app',
+    }) as PluginOption,
   ],
 });

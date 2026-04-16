@@ -22,6 +22,16 @@ db.exec(`
   );
 
   CREATE INDEX IF NOT EXISTS idx_created_at ON error_reports(created_at);
+
+  CREATE TABLE IF NOT EXISTS uploads (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project TEXT NOT NULL,
+    timestamp INTEGER NOT NULL,
+    filename TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_upload_timestamp ON uploads(timestamp);
 `);
 
 export interface ErrorReport {
@@ -82,4 +92,41 @@ export function getErrorReportCount() {
  */
 export function clearErrorReports() {
   db.exec('DELETE FROM error_reports');
+}
+
+/**
+ * 保存文件上传记录
+ */
+export function saveUploadRecord(project: string, timestamp: number, filename: string) {
+  const stmt = db.prepare(`
+    INSERT INTO uploads (project, timestamp, filename, created_at)
+    VALUES (?, ?, ?, ?)
+  `);
+  stmt.run(project, timestamp, filename, Date.now());
+}
+
+/**
+ * 查询文件上传记录
+ */
+export function getUploadRecords(limit = 100, offset = 0) {
+  const stmt = db.prepare(`
+    SELECT id, project, timestamp, filename, created_at
+    FROM uploads
+    ORDER BY created_at DESC
+    LIMIT ? OFFSET ?
+  `);
+  return stmt.all(limit, offset) as Array<{
+    id: number;
+    project: string;
+    timestamp: number;
+    filename: string;
+    created_at: number;
+  }>;
+}
+
+/**
+ * 清空所有上传记录
+ */
+export function clearUploadRecords() {
+  db.exec('DELETE FROM uploads');
 }

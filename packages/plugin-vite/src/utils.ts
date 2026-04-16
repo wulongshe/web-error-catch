@@ -15,12 +15,19 @@ export function convertSourceMaps(
     });
 }
 
-export function uploadFile(url: string, filename: string, content: string) {
+export function uploadFiles(
+  url: string,
+  project: string,
+  timestamp: number,
+  files: [filename: string, content: string][],
+): Promise<void> {
   const formData = new FormData();
-  formData.append('file', content, { filename });
+  files.forEach(([filename, content]) => {
+    formData.append('file', content, { filename });
+  });
   return axios({
     method: 'POST',
-    url,
+    url: `${url}?project=${encodeURIComponent(project)}&timestamp=${timestamp}`,
     data: formData,
     headers: formData.getHeaders(),
   });

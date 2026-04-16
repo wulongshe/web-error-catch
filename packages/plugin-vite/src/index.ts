@@ -1,8 +1,9 @@
 import type { Plugin } from 'vite';
-import { convertSourceMaps, uploadFile } from './utils.js';
+import { convertSourceMaps, uploadFiles } from './utils.js';
 
 export interface UploadSourceMapOptions {
   url: string;
+  project: string;
   // 默认只有在 production 模式下才会上传 sourcemap
   force?: boolean;
 }
@@ -19,14 +20,11 @@ export default function uploadSourceMapPlugin(options: UploadSourceMapOptions): 
     },
     generateBundle(_, bundle) {
       if (!options.force && !isProduction) return;
-      // 筛选出 sourcemap
       const sourceMaps = convertSourceMaps(bundle);
-      // 上传 sourcemap
-      sourceMaps.forEach(([key, value]) => {
-        uploadFile(options.url, key, value)
-          .then(() => console.log(`Success upload ${key}`))
-          .catch(() => console.error(`Failed upload ${key}`));
-      });
+      if (sourceMaps.length === 0) return;
+      uploadFiles(options.url, options.project, Date.now(), sourceMaps)
+        .then(() => console.log(`[upload-sourcemap] uploaded ${sourceMaps.length} files`))
+        .catch((err) => console.error('[upload-sourcemap] upload failed', err));
     },
   };
 }
