@@ -1,5 +1,5 @@
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { publicPath } from '#src/store.ts';
 
 interface ReportErrorParamsLog {

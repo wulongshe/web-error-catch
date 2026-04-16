@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import multer from 'multer';
-import { join, resolve } from 'path';
+import { join, resolve } from 'node:path';
 
 export const publicPath = resolve(process.cwd(), './public');
 
