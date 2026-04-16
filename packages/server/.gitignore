@@ -2,6 +2,8 @@
 node_modules
 dist
 
+# Docker volumes
+data
 uploads
 
 # env files
@@ -23,6 +25,3 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-# database
-data/*.db

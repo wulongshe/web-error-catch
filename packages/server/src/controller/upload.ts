@@ -9,8 +9,8 @@ export interface UploadParams {
   timestamp?: string;
 }
 
-// 每个项目保留的上传文件数量
-const KEEP_UPLOAD_COUNT = Number(process.env.KEEP_UPLOAD_COUNT) || 3;
+// 每个项目保留的上传文件次数
+const KEEP_UPLOAD_TIMES = 3;
 
 /**
  * 处理多文件上传逻辑
@@ -35,7 +35,7 @@ export async function handleUpload(
  * 清理项目的旧文件
  */
 async function cleanupOldFiles(project: string) {
-  const recordsToDelete = getRecordsToDelete(project, KEEP_UPLOAD_COUNT);
+  const recordsToDelete = getRecordsToDelete(project, KEEP_UPLOAD_TIMES);
 
   for (const record of recordsToDelete) {
     const filePath = join(uploadsPath, record.filename);

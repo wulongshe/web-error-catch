@@ -20,8 +20,8 @@
   "scripts": {
     "prettier": "prettier -c --write \"src/**/*\" \"test/**/*\"",
     "check": "tsc --noEmit",
-    "serve": "node --env-file=.env src/index.ts",
-    "dev": "node --watch --env-file=.env src/index.ts",
+    "serve": "node src/index.ts",
+    "dev": "node --watch src/index.ts",
     "test": "node --test"
   },
   "devDependencies": {
