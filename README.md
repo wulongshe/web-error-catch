@@ -88,6 +88,7 @@ export default defineConfig({
 import { register } from '@dt-wec/sdk';
 
 register({
+  project: 'your-project-name',
   url: 'https://example.com/report',
 });
 ```

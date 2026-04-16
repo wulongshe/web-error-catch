@@ -5,7 +5,8 @@ import { setupCounter } from './trigger.ts';
 import { register } from '@dt-wec/sdk';
 
 register({
-  url: 'http://localhost:8080/report',
+  project: 'vite-app',
+  url: 'http://127.0.0.1:8080/report',
 });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `

@@ -69,12 +69,8 @@ export async function parseStack(stack: string, contextLines = 10): Promise<Pars
     const errorLineIndex = position.line - 1; // 转为 0-based
     const start = Math.max(0, errorLineIndex - contextLines);
     const end = Math.min(allLines.length - 1, errorLineIndex + contextLines);
-    const padWidth = String(end + 1).length;
 
-    context = allLines
-      .slice(start, end + 1)
-      .map((text, i) => `${String(start + i + 1).padStart(padWidth, ' ')} | ${text}`)
-      .join('\n');
+    context = allLines.slice(start, end + 1).join('\n');
     context_line = errorLineIndex - start + 1;
     break;
   }

@@ -1,7 +1,7 @@
 import { catchError, catchUnhandledrejection } from './catch';
 
 export interface Options {
-  meta?: string;
+  project: string;
   url: string;
 }
 

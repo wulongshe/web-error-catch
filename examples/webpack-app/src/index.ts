@@ -2,7 +2,8 @@ import { register } from '@dt-wec/sdk';
 import { setupCounter } from './trigger';
 
 register({
-  url: 'http://localhost:8080/report',
+  project: 'webpack-app',
+  url: 'http://127.0.0.1:8080/report',
 });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `

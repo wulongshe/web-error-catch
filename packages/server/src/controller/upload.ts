@@ -25,7 +25,7 @@ export async function handleUpload(
     saveUploadRecord(project, timestamp, file.filename);
   });
 
-  // 清理旧文件（保留最新3次上传）
+  // 清理旧文件
   await cleanupOldFiles(project);
 
   return { count: files.length };

@@ -14,6 +14,7 @@ const db = new DatabaseSync(dbPath);
 db.exec(`
   CREATE TABLE IF NOT EXISTS error_reports (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project TEXT NOT NULL,
     stack TEXT NOT NULL,
     parsed_stack TEXT,
     created_at INTEGER NOT NULL,
@@ -24,6 +25,7 @@ db.exec(`
   );
 
   CREATE INDEX IF NOT EXISTS idx_created_at ON error_reports(created_at);
+  CREATE INDEX IF NOT EXISTS idx_project ON error_reports(project);
 
   CREATE TABLE IF NOT EXISTS uploads (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,6 +41,7 @@ db.exec(`
 `);
 
 export interface ErrorReport {
+  project: string;
   stack: string;
   parsed_stack?: string;
   user_agent?: string;
@@ -52,10 +55,11 @@ export interface ErrorReport {
  */
 export function saveErrorReport(report: ErrorReport) {
   const stmt = db.prepare(`
-    INSERT INTO error_reports (stack, parsed_stack, created_at, user_agent, url, source_context, source_context_line)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO error_reports (project, stack, parsed_stack, created_at, user_agent, url, source_context, source_context_line)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
   stmt.run(
+    report.project,
     report.stack,
     report.parsed_stack || null,
     Date.now(),
@@ -66,33 +70,54 @@ export function saveErrorReport(report: ErrorReport) {
   );
 }
 
+export interface QueryErrorReportsParams {
+  project: string;
+  start_time?: number;
+  end_time?: number;
+  page?: number;
+  page_size?: number;
+}
+
 /**
- * 查询错误报告
+ * 分页查询错误报告
  */
-export function getErrorReports(limit = 100, offset = 0) {
-  const stmt = db.prepare(`
-    SELECT id, stack, parsed_stack, created_at, user_agent, url
-    FROM error_reports
+export function queryErrorReports(params: QueryErrorReportsParams) {
+  const { project, start_time, end_time, page = 1, page_size = 20 } = params;
+
+  const conditions: string[] = ['project = ?'];
+  const args: (string | number)[] = [project];
+
+  if (start_time != null) {
+    conditions.push('created_at >= ?');
+    args.push(start_time);
+  }
+  if (end_time != null) {
+    conditions.push('created_at <= ?');
+    args.push(end_time);
+  }
+
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const offset = (page - 1) * page_size;
+
+  const total = (db.prepare(`SELECT COUNT(*) as count FROM error_reports ${where}`).get(...args) as { count: number }).count;
+  const list = db.prepare(`
+    SELECT id, project, stack, parsed_stack, created_at, user_agent, url, source_context, source_context_line
+    FROM error_reports ${where}
     ORDER BY created_at DESC
     LIMIT ? OFFSET ?
-  `);
-  return stmt.all(limit, offset) as Array<{
+  `).all(...args, page_size, offset) as Array<{
     id: number;
+    project: string | null;
     stack: string;
     parsed_stack: string | null;
     created_at: number;
     user_agent: string | null;
     url: string | null;
+    source_context: string | null;
+    source_context_line: number | null;
   }>;
-}
 
-/**
- * 获取错误报告总数
- */
-export function getErrorReportCount() {
-  const stmt = db.prepare('SELECT COUNT(*) as count FROM error_reports');
-  const result = stmt.get() as { count: number };
-  return result.count;
+  return { total, page, page_size, list };
 }
 
 /**
@@ -103,14 +128,22 @@ export function clearErrorReports() {
 }
 
 /**
- * 保存文件上传记录
+ * 保存文件上传记录；已存在相同 project+filename 则更新 timestamp
  */
 export function saveUploadRecord(project: string, timestamp: number, filename: string) {
-  const stmt = db.prepare(`
+  const now = Date.now();
+  const update = db.prepare(`
+    UPDATE uploads
+    SET timestamp = ?, created_at = ?, deleted = 0
+    WHERE project = ? AND filename = ?
+  `);
+  const { changes } = update.run(timestamp, now, project, filename);
+  if (changes > 0) return;
+
+  db.prepare(`
     INSERT INTO uploads (project, timestamp, filename, created_at)
     VALUES (?, ?, ?, ?)
-  `);
-  stmt.run(project, timestamp, filename, Date.now());
+  `).run(project, timestamp, filename, now);
 }
 
 /**
@@ -142,15 +175,20 @@ export function clearUploadRecords() {
 /**
  * 获取项目需要删除的上传记录
  */
-export function getRecordsToDelete(project: string, keepCount: number = 3) {
+export function getRecordsToDelete(project: string, keepTimes: number = 3) {
   const stmt = db.prepare(`
     SELECT id, filename, timestamp
     FROM uploads
-    WHERE project = ? AND deleted = 0
-    ORDER BY timestamp DESC
-    LIMIT -1 OFFSET ?
+    WHERE project = ? AND deleted IS NOT 1
+      AND timestamp NOT IN (
+        SELECT DISTINCT timestamp
+        FROM uploads
+        WHERE project = ? AND deleted IS NOT 1
+        ORDER BY timestamp DESC
+        LIMIT ?
+      )
   `);
-  return stmt.all(project, keepCount) as Array<{
+  return stmt.all(project, project, keepTimes) as Array<{
     id: number;
     filename: string;
     timestamp: number;
