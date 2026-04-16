@@ -1,6 +1,5 @@
 import { writLog } from '#src/logger.ts';
 import { parseStack } from '#src/parser.ts';
-import { Accessor } from '#src/utils.ts';
 
 export interface ReportErrorParams {
   meta?: string;
@@ -10,18 +9,4 @@ export interface ReportErrorParams {
 export async function reportError({ meta, stack }: ReportErrorParams) {
   const original_stack = await parseStack(stack);
   writLog({ meta, stack, original_stack });
-}
-
-export interface TransformErrorParams {
-  data: any;
-  stack_path: string;
-}
-
-export async function transformError({ data, stack_path }: TransformErrorParams): Promise<any> {
-  const accessor = new Accessor(data);
-  const stack = (stack_path ? accessor.get(stack_path) : data) as string;
-  const original_stack = await parseStack(stack);
-  if (!stack_path) return original_stack;
-  accessor.set(stack_path, original_stack);
-  return accessor.value;
 }

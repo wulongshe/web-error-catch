@@ -1,7 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { __set_consumer_map__, parseStack } from '#src/parser.ts';
-import { Accessor } from '#src/utils.ts';
 
 test('parseStack', async () => {
   const stack = `Error: custom error
@@ -23,18 +22,4 @@ test('parseStack', async () => {
   // wait for consumer destroy
   await new Promise((resolve) => setTimeout(resolve, 200));
   assert.strictEqual(await parseStack(stack), ``);
-});
-
-test('create accessor', () => {
-  const data = { a: { b: { d: ['d1', 'd2'], e: 1 }, c: 'c' } };
-  const stack_path = 'a.b.d.0';
-  const accessor = new Accessor(data);
-
-  assert.strictEqual(accessor.get(stack_path), 'd1');
-
-  accessor.set(stack_path, 'd3');
-
-  assert.strictEqual(accessor.get(stack_path), 'd3');
-
-  assert.deepStrictEqual(accessor.value, { a: { b: { d: ['d3', 'd2'], e: 1 }, c: 'c' } });
 });
