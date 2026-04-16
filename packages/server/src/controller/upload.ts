@@ -1,7 +1,7 @@
 import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { saveUploadRecord, getRecordsToDelete, markAsDeleted } from '#src/database/index.ts';
-import { publicPath } from './store.ts';
+import { uploadsPath } from './store.ts';
 import { logger } from '#src/logger.ts';
 
 export interface UploadParams {
@@ -38,7 +38,7 @@ async function cleanupOldFiles(project: string) {
   const recordsToDelete = getRecordsToDelete(project, KEEP_UPLOAD_COUNT);
 
   for (const record of recordsToDelete) {
-    const filePath = join(publicPath, record.filename);
+    const filePath = join(uploadsPath, record.filename);
     try {
       await rm(filePath, { force: true });
       markAsDeleted(record.id);
