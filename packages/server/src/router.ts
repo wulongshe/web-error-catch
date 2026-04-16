@@ -1,6 +1,5 @@
 import express, { type Request } from 'express';
-import { parseStack, upload, handleUpload, type UploadParams } from '#src/controller/index.ts';
-import { saveErrorReport } from '#src/database/index.ts';
+import { upload, handleUpload, handleReport, type UploadParams } from '#src/controller/index.ts';
 
 const router = express.Router();
 
@@ -8,6 +7,7 @@ type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
 
 interface ReportParams {
   stack: string;
+  context_lines?: string;
 }
 
 /** 测试接口 */
@@ -17,25 +17,15 @@ router.get('/test', (req, res) => {
 
 /** 上报异常 */
 router.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
-  const parsed = await parseStack(req.query.stack);
-  saveErrorReport({
-    stack: req.query.stack,
-    parsed_stack: parsed,
-    user_agent: req.get('user-agent'),
-    url: req.get('referer'),
-  });
+  const contextLines = req.query.context_lines ? Number(req.query.context_lines) : undefined;
+  await handleReport(req.query.stack, req.get('user-agent'), req.get('referer'), contextLines);
   res.send({ status: 200, message: 'success' });
   next();
 });
 router.post('/report', express.raw({ type: '*/*' }), async (req: IRequest<ArrayBuffer>, res, next) => {
   const data = JSON.parse(new TextDecoder('utf-8').decode(req.body)) as ReportParams;
-  const parsed = await parseStack(data.stack);
-  saveErrorReport({
-    stack: data.stack,
-    parsed_stack: parsed,
-    user_agent: req.get('user-agent'),
-    url: req.get('referer'),
-  });
+  const contextLines = data.context_lines ? Number(data.context_lines) : undefined;
+  await handleReport(data.stack, req.get('user-agent'), req.get('referer'), contextLines);
   res.send({ status: 200, message: 'success' });
   next();
 });

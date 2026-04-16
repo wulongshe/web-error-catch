@@ -18,7 +18,9 @@ db.exec(`
     parsed_stack TEXT,
     created_at INTEGER NOT NULL,
     user_agent TEXT,
-    url TEXT
+    url TEXT,
+    source_context TEXT,
+    source_context_line INTEGER
   );
 
   CREATE INDEX IF NOT EXISTS idx_created_at ON error_reports(created_at);
@@ -41,6 +43,8 @@ export interface ErrorReport {
   parsed_stack?: string;
   user_agent?: string;
   url?: string;
+  source_context?: string;
+  source_context_line?: number;
 }
 
 /**
@@ -48,8 +52,8 @@ export interface ErrorReport {
  */
 export function saveErrorReport(report: ErrorReport) {
   const stmt = db.prepare(`
-    INSERT INTO error_reports (stack, parsed_stack, created_at, user_agent, url)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO error_reports (stack, parsed_stack, created_at, user_agent, url, source_context, source_context_line)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
   stmt.run(
     report.stack,
@@ -57,6 +61,8 @@ export function saveErrorReport(report: ErrorReport) {
     Date.now(),
     report.user_agent || null,
     report.url || null,
+    report.source_context || null,
+    report.source_context_line ?? null,
   );
 }
 

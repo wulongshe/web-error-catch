@@ -23,28 +23,67 @@ async function getConsumer(sourcemap: string) {
   return consumer;
 }
 
-export async function parseStack(stack: string) {
+export interface ParseResult {
+  parsed_stack: string;
+  /** 截取的源码片段 */
+  context: string | null;
+  /** 出错行在截取片段中的行号（1-based） */
+  context_line: number | null;
+}
+
+export async function parseStack(stack: string, contextLines = 10): Promise<ParseResult> {
   const regexp = /at\s+.+\/(.+):(\d+):(\d+)/;
   const [message, ...frames] = stack.split('\n');
 
   const matchArr = frames.map((frame) => frame.match(regexp)).filter(Boolean) as RegExpMatchArray[];
-  const stacks = await Promise.all(
+  const results = await Promise.all(
     matchArr.map(async ([, source, line, column]) => {
       const sourcemap = `${source}.map`;
       try {
         const consumer = await getConsumer(sourcemap);
-        return consumer.originalPositionFor({ line: Number(line), column: Number(column) });
+        const position = consumer.originalPositionFor({ line: Number(line), column: Number(column) });
+        return { consumer, position };
       } catch {
         return null;
       }
     }),
   );
 
-  const lines = (stacks.filter(Boolean) as NullableMappedPosition[]).map(({ name, source, line, column }) =>
-    name ? `at ${name} (${source}:${line}:${column})` : `at ${source}:${line}:${column}`,
+  // 拼接解析后的调用栈
+  const stackLines = (results.filter(Boolean) as NonNullable<(typeof results)[number]>[]).map(
+    ({ position: { name, source, line, column } }) =>
+      name ? `at ${name} (${source}:${line}:${column})` : `at ${source}:${line}:${column}`,
   );
-  if (!lines.length) return '';
-  return message + '\n  ' + lines.join('\n  ');
+
+  // 取第一个能拿到源码内容的帧作为上下文
+  let context: string | null = null;
+  let context_line: number | null = null;
+  for (const result of results) {
+    if (!result) continue;
+    const { consumer, position } = result;
+    if (!position.source || position.line == null) continue;
+    const content = consumer.sourceContentFor(position.source, true);
+    if (!content) continue;
+
+    const allLines = content.split('\n');
+    const errorLineIndex = position.line - 1; // 转为 0-based
+    const start = Math.max(0, errorLineIndex - contextLines);
+    const end = Math.min(allLines.length - 1, errorLineIndex + contextLines);
+    const padWidth = String(end + 1).length;
+
+    context = allLines
+      .slice(start, end + 1)
+      .map((text, i) => `${String(start + i + 1).padStart(padWidth, ' ')} | ${text}`)
+      .join('\n');
+    context_line = errorLineIndex - start + 1;
+    break;
+  }
+
+  return {
+    parsed_stack: stackLines.length ? message + '\n  ' + stackLines.join('\n  ') : '',
+    context,
+    context_line,
+  };
 }
 
 /** 仅test使用 */

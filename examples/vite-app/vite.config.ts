@@ -7,7 +7,7 @@ export default defineConfig({
   },
   plugins: [
     UploadSourceMapPlugin({
-      url: 'http://localhost:3000/upload',
+      url: 'http://127.0.0.1:8080/upload',
       project: 'vite-app',
     }) as PluginOption,
   ],

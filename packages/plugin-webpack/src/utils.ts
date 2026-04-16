@@ -8,7 +8,6 @@ export function convertSourceMaps(assets: Compilation['assets']): [key: string, 
     .map(([name, asset]) => {
       const source = JSON.parse((asset as any)?._value || '{}');
       delete assets[name];
-      delete source['sourcesContent'];
       return [name, JSON.stringify(source)];
     });
 }
@@ -21,7 +20,7 @@ export function uploadFiles(
 ): Promise<void> {
   const formData = new FormData();
   files.forEach(([filename, content]) => {
-    formData.append('file', content, { filename });
+    formData.append('file', Buffer.from(content, 'utf-8'), { filename });
   });
   return axios({
     method: 'POST',

@@ -26,7 +26,7 @@ export default {
       template: 'index.html',
     }),
     new UploadSourceMapPlugin({
-      url: 'http://localhost:3000/upload',
+      url: 'http://127.0.0.1:8080/upload',
       project: 'webpack-app',
     }),
   ],

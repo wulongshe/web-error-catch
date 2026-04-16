@@ -1,5 +1,6 @@
 node_modules
-dist
+data
+uploads
 .husky
 npm-debug.log*
 yarn-debug.log*

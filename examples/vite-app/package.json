@@ -4,17 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "serve": "wec --port 8080",
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build --mode production",
-    "preview": "vite preview"
+    "preview": "vite preview --host"
   },
   "dependencies": {
     "@dt-wec/sdk": "workspace:*"
   },
   "devDependencies": {
     "@dt-wec/plugin-vite": "workspace:*",
-    "@dt-wec/server": "workspace:*",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }

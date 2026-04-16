@@ -95,9 +95,10 @@ register({
 ### server
 
 ```bash
-wec --port 8080 # default 8080
-
-# check log on http://localhost:8080/report.log or http://localhost:8080/report.json
+# default port 8080
+pnpm serve
+# or docker
+sh deploy.sh
 ```
 
 ## 🔑 Server API
@@ -105,10 +106,15 @@ wec --port 8080 # default 8080
 ### upload source map
 
 ```ts
+interface UploadQuery {
+  project: string;
+  timestamp: number;
+}
 interface UploadSourceMap {
   method: 'POST';
   url: '/upload';
-  body: FormData;
+  query: UploadQuery;
+  body: FormData; // field: 'file'
   headers: { 'content-type': 'multipart/form-data' };
 }
 ```
@@ -116,46 +122,20 @@ interface UploadSourceMap {
 ### report error information
 
 ```ts
-interface ReportErrorParams {
-  meta?: string;
+interface ReportParams {
   stack: string;
+  context_lines?: number;
 }
 interface ReportErrorGet {
   method: 'GET';
   url: '/report';
-  query: ReportErrorParams;
+  query: ReportParams;
 }
 interface ReportErrorPost {
   method: 'POST';
   url: '/report';
   headers: { 'Content-Type': 'text/plain;charset=UTF-8' };
-  body: ReportErrorParams;
-}
-```
-
-### transform error information
-
-```ts
-interface TransformErrorParams {
-  data: any;
-  stack_path: string;
-}
-interface TransformErrorGet {
-  method: 'GET';
-  url: '/transform';
-  query: TransformErrorParams;
-}
-interface TransformErrorPost {
-  method: 'POST';
-  url: '/transform';
-  headers: { 'Content-Type': 'text/plain;charset=UTF-8' };
-  body: TransformErrorParams;
-}
-interface BatchTransformErrorPost {
-  method: 'POST';
-  url: '/transform-batch';
-  headers: { 'Content-Type': 'text/plain;charset=UTF-8' };
-  body: string[];
+  body: ReportParams;
 }
 ```
 

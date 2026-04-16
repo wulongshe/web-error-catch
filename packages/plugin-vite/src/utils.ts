@@ -10,7 +10,6 @@ export function convertSourceMaps(
     .map(([fileName, chunk]) => {
       delete bundle[fileName];
       const source = JSON.parse((chunk as any)?.source || '{}');
-      delete source['sourcesContent'];
       return [fileName.split('/')[1], JSON.stringify(source)];
     });
 }
@@ -23,7 +22,7 @@ export function uploadFiles(
 ): Promise<void> {
   const formData = new FormData();
   files.forEach(([filename, content]) => {
-    formData.append('file', content, { filename });
+    formData.append('file', Buffer.from(content, 'utf-8'), { filename });
   });
   return axios({
     method: 'POST',

@@ -5,7 +5,6 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "serve": "wec --port 8080",
     "build": "webpack --mode production",
     "dev": "webpack-dev-server --open",
     "preview": "live-server dist"
@@ -18,7 +17,6 @@
   },
   "devDependencies": {
     "@dt-wec/plugin-webpack": "workspace:*",
-    "@dt-wec/server": "workspace:*",
     "html-webpack-plugin": "^5.5.3",
     "live-server": "^1.2.2",
     "ts-loader": "^9.5.1",
