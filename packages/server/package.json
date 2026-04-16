@@ -7,7 +7,7 @@
   "keywords": [],
   "type": "module",
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=25.0.0"
   },
   "imports": {
     "#src/*": "./src/*"

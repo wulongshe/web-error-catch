@@ -1,5 +1,6 @@
 import express, { type Request } from 'express';
 import { parseStack, upload } from '#src/controller/index.ts';
+import { saveErrorReport } from '#src/database/index.ts';
 
 const router = express.Router();
 
@@ -16,13 +17,25 @@ router.get('/test', (req, res) => {
 
 /** 上报异常 */
 router.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
-  parseStack(req.query.stack);
+  const parsed = await parseStack(req.query.stack);
+  saveErrorReport({
+    stack: req.query.stack,
+    parsed_stack: parsed,
+    user_agent: req.get('user-agent'),
+    url: req.get('referer'),
+  });
   res.send({ status: 200, message: 'success' });
   next();
 });
 router.post('/report', express.raw({ type: '*/*' }), async (req: IRequest<ArrayBuffer>, res, next) => {
   const data = JSON.parse(new TextDecoder('utf-8').decode(req.body)) as ReportParams;
-  parseStack(data.stack);
+  const parsed = await parseStack(data.stack);
+  saveErrorReport({
+    stack: data.stack,
+    parsed_stack: parsed,
+    user_agent: req.get('user-agent'),
+    url: req.get('referer'),
+  });
   res.send({ status: 200, message: 'success' });
   next();
 });
