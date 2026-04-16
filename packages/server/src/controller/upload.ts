@@ -1,6 +1,6 @@
 import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
-import { saveUploadRecord, getRecordsToDelete, markAsDeleted } from '#src/database/index.ts';
+import { saveUploadRecord, getRecordsToDelete, markAsDeleted, upsertProject } from '#src/database/index.ts';
 import { uploadsPath } from './store.ts';
 import { logger } from '#src/logger.ts';
 
@@ -20,6 +20,9 @@ export async function handleUpload(
   timestamp: number,
   files: Express.Multer.File[],
 ) {
+  // 记录项目
+  upsertProject(project);
+
   // 保存上传记录
   files.forEach((file) => {
     saveUploadRecord(project, timestamp, file.filename);

@@ -38,6 +38,12 @@ db.exec(`
 
   CREATE INDEX IF NOT EXISTS idx_upload_timestamp ON uploads(timestamp);
   CREATE INDEX IF NOT EXISTS idx_upload_project ON uploads(project);
+
+  CREATE TABLE IF NOT EXISTS projects (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    created_at INTEGER NOT NULL
+  );
 `);
 
 export interface ErrorReport {
@@ -201,4 +207,24 @@ export function getRecordsToDelete(project: string, keepTimes: number = 3) {
 export function markAsDeleted(id: number) {
   const stmt = db.prepare('UPDATE uploads SET deleted = 1 WHERE id = ?');
   stmt.run(id);
+}
+
+/**
+ * 记录项目（已存在则忽略）
+ */
+export function upsertProject(name: string) {
+  db.prepare(`
+    INSERT INTO projects (name, created_at)
+    VALUES (?, ?)
+    ON CONFLICT(name) DO NOTHING
+  `).run(name, Date.now());
+}
+
+/**
+ * 查询所有项目列表
+ */
+export function getProjects() {
+  return db.prepare(`
+    SELECT id, name, created_at FROM projects ORDER BY created_at ASC
+  `).all() as Array<{ id: number; name: string; created_at: number }>;
 }

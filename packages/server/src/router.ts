@@ -1,6 +1,6 @@
 import express, { type Request } from 'express';
 import { upload, handleUpload, handleReport, type UploadParams } from '#src/controller/index.ts';
-import { queryErrorReports } from '#src/database/index.ts';
+import { queryErrorReports, getProjects } from '#src/database/index.ts';
 
 const router = express.Router();
 
@@ -62,6 +62,12 @@ router.get('/report-list', (req: IRequest<{}, ReportListParams>, res) => {
     page_size: page_size ? Number(page_size) : undefined,
   });
   res.json({ status: 200, ...result });
+});
+
+/** 查询项目列表 */
+router.get('/projects', (req, res) => {
+  const list = getProjects();
+  res.json({ status: 200, list });
 });
 
 /** 上传文件 */
