@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { writLog } from '#src/logger.ts';
 import { parseStack } from '#src/parser.ts';
 import { Accessor } from '#src/utils.ts';
@@ -16,7 +15,6 @@ export async function reportError({ meta, stack }: ReportErrorParams) {
 export interface TransformErrorParams {
   data: any;
   stack_path: string;
-  forward_url: string;
 }
 
 export async function transformError({ data, stack_path }: TransformErrorParams): Promise<any> {
@@ -26,9 +24,4 @@ export async function transformError({ data, stack_path }: TransformErrorParams)
   if (!stack_path) return original_stack;
   accessor.set(stack_path, original_stack);
   return accessor.value;
-}
-
-export async function forward(send: (data: any) => any, config: { method: 'GET' | 'POST'; url: string; data: any }) {
-  const response = await axios(config);
-  send(response.data);
 }

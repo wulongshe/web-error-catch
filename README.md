@@ -139,7 +139,6 @@ interface ReportErrorPost {
 interface TransformErrorParams {
   data: any;
   stack_path: string;
-  forward_url: string;
 }
 interface TransformErrorGet {
   method: 'GET';
