@@ -11,6 +11,6 @@ COPY . .
 
 RUN mkdir -p /app/data /app/uploads
 
-EXPOSE 8080
+EXPOSE 8000
 
 CMD ["node", "src/index.ts"]

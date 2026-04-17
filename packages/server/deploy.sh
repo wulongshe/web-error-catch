@@ -7,7 +7,7 @@ set +a
 IMAGE_NAME="frontend-monitor-server"
 CONTAINER_NAME="frontend-monitor-server"
 VERSION=$(grep '"version"' package.json | head -1 | sed -E 's/.*"version": *"([^"]+)".*/\1/')
-PORT=${PORT:-8080}
+PORT=${PORT:-8000}
 
 DATA_DIR="data"
 UPLOADS_DIR="uploads"
@@ -23,7 +23,7 @@ docker rm $CONTAINER_NAME 2>/dev/null
 # 运行容器并挂载数据卷
 docker run \
   --name $CONTAINER_NAME \
-  -p $PORT:8080 \
+  -p $PORT:8000 \
   -v "$DATA_DIR:/app/data" \
   -v "$UPLOADS_DIR:/app/uploads" \
   -e NODE_ENV=production \

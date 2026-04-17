@@ -100,7 +100,7 @@ register({
 ### server
 
 ```bash
-# default port 8080
+# default port 8000
 pnpm serve
 # or docker
 sh deploy.sh
@@ -111,7 +111,7 @@ sh deploy.sh
 server 与 web 独立使用 Docker 部署，web 容器（nginx）将 `/api/*` 反向代理到宿主机 `server`，避免跨域。
 
 ```bash
-# 部署 server（默认 8080）
+# 部署 server（默认 8000）
 cd packages/server
 sh deploy.sh
 

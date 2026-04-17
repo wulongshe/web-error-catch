@@ -3,7 +3,7 @@ import { setupCounter } from './trigger';
 
 register({
   project: 'webpack-app',
-  url: 'http://127.0.0.1:8080/report',
+  url: 'http://127.0.0.1:8000/report',
 });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `

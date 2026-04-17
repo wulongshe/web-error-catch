@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8080',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         // 将 /api/xxx 代理到后端的 /xxx
         rewrite: (p) => p.replace(/^\/api/, ''),

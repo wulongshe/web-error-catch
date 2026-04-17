@@ -3,7 +3,7 @@ import router from '#src/router.ts';
 import { uploadsPath } from '#src/controller/index.ts';
 import { logger } from '#src/logger.ts';
 
-const PORT = 8080;
+const PORT = 8000;
 
 async function main() {
   // 生成app实例
