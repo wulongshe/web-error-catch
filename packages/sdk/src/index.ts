@@ -6,6 +6,9 @@ export interface Options {
 }
 
 export function register(options: Options) {
+  if (typeof window === 'undefined') return;
   catchError(options);
   catchUnhandledrejection(options);
 }
+
+export { send } from './send';

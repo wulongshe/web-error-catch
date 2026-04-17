@@ -1,4 +1,5 @@
 export function send(url: string, data: any) {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
   if (!!navigator.sendBeacon) {
     sendBeacon(url, data);
   } else if (typeof fetch !== 'undefined') {

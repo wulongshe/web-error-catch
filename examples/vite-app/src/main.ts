@@ -5,7 +5,7 @@ import { setupCounter } from './trigger.ts';
 import { register } from '@dt-wec/sdk';
 
 register({
-  project: 'vite-app',
+  project: 'ebk-web',
   url: 'http://127.0.0.1:8000/report',
 });
 

@@ -1,0 +1,68 @@
+{
+  "name": "@dt-wec/plugin-nuxt",
+  "version": "1.0.0",
+  "author": "shewulong",
+  "license": "MIT",
+  "description": "Nuxt 3 module for @dt-wec error reporting and sourcemap upload",
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "error-catch",
+    "sourcemap"
+  ],
+  "type": "module",
+  "main": "./dist/module.cjs",
+  "types": "./dist/module.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/module.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    },
+    "./nuxt2": {
+      "types": "./dist/module.nuxt2.d.ts",
+      "import": "./dist/module.nuxt2.mjs",
+      "require": "./dist/module.nuxt2.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wulongshe/web-error-catch.git",
+    "directory": "packages/plugin-nuxt"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "prepack": "unbuild",
+    "prettier": "prettier -c --write \"src/**/*\"",
+    "upload": "npm publish --access public",
+    "prepublishOnly": "unbuild"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.8.0",
+    "@dt-wec/sdk": "workspace:*",
+    "@dt-wec/plugin-vite": "workspace:*",
+    "@dt-wec/plugin-webpack": "workspace:*"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^3.8.0",
+    "@types/node": "^20.9.0",
+    "nitropack": "^2.8.0",
+    "nuxt": "^3.8.0",
+    "unbuild": "^2.0.0",
+    "typescript": "^5.6.0",
+    "prettier": "^3.0.3",
+    "vue": "^2.7.16"
+  },
+  "peerDependencies": {
+    "nuxt": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.12.0"
+  }
+}

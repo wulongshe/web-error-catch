@@ -6,7 +6,8 @@ export function convertSourceMaps(assets: Compilation['assets']): [key: string, 
   return Object.entries(assets)
     .filter(([name]) => name.endsWith('.map'))
     .map(([name, asset]) => {
-      const source = JSON.parse((asset as any)?._value || '{}');
+      const raw = (asset as any)?._value ?? (typeof (asset as any)?.source === 'function' ? (asset as any).source() : '');
+      const source = JSON.parse(raw || '{}');
       delete assets[name];
       return [name, JSON.stringify(source)];
     });
