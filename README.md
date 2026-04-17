@@ -44,6 +44,10 @@ pnpm preview
 cd packages/server
 pnpm dev
 
+# start web (dashboard)
+cd packages/web
+pnpm dev
+
 # add and commit code
 pnpm ac
 ```
@@ -100,6 +104,22 @@ register({
 pnpm serve
 # or docker
 sh deploy.sh
+```
+
+## 🐳 Docker Deploy
+
+server 与 web 独立使用 Docker 部署，web 容器（nginx）将 `/api/*` 反向代理到宿主机 `server`，避免跨域。
+
+```bash
+# 部署 server（默认 8080）
+cd packages/server
+sh deploy.sh
+
+# 部署 web（默认 80）
+cd packages/web
+sh deploy.sh
+
+# 访问 http://127.0.0.1
 ```
 
 ## 🔑 Server API

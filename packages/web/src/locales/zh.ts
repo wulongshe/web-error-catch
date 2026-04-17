@@ -1,0 +1,35 @@
+export default {
+  nav: {
+    dashboard: '仪表盘',
+    errorTracking: '异常追踪',
+  },
+  dashboard: {
+    totalProjects: '总项目数',
+    monthlyErrors: '近一月异常总数',
+    todayErrors: '今日新增',
+    totalErrors: '总异常数',
+    chartTitle: '近一月各项目异常分布',
+    seriesName: '异常数',
+  },
+  errorTrack: {
+    allProjects: '全部项目',
+    all: '全部',
+    startTime: '开始时间',
+    endTime: '结束时间',
+    rangeSep: '至',
+    search: '查询',
+    reset: '重置',
+    colTime: '创建时间',
+    colProject: '项目',
+    colStack: 'Stack 摘要',
+    drawerTitle: '异常详情',
+  },
+  stack: {
+    reportTime: '上报时间',
+    project: '项目',
+    parsedStack: '解析后的 Stack',
+    sourceContext: '源码片段',
+    minifiedStack: '混淆后 Stack',
+    none: '（暂无）',
+  },
+};

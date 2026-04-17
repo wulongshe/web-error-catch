@@ -1,6 +1,6 @@
 import express, { type Request } from 'express';
 import { upload, handleUpload, handleReport, type UploadParams } from '#src/controller/index.ts';
-import { queryErrorReports, getProjects } from '#src/database/index.ts';
+import { queryErrorReports, getProjects, queryProjectStats } from '#src/database/index.ts';
 
 const router = express.Router();
 
@@ -13,11 +13,16 @@ interface ReportParams {
 }
 
 interface ReportListParams {
-  project: string;
+  project?: string;
   start_time?: string;
   end_time?: string;
   page?: string;
   page_size?: string;
+}
+
+interface ProjectStatsParams {
+  start_time?: string;
+  end_time?: string;
 }
 
 /** 测试接口 */
@@ -47,21 +52,27 @@ router.post('/report', express.raw({ type: '*/*' }), async (req: IRequest<ArrayB
   next();
 });
 
-/** 分页查询异常日志 */
+/** 分页查询异常日志（project 可选） */
 router.get('/report-list', (req: IRequest<{}, ReportListParams>, res) => {
   const { project, start_time, end_time, page, page_size } = req.query;
-  if (!project) {
-    res.status(400).send({ status: 400, message: 'Missing parameter: project' });
-    return;
-  }
   const result = queryErrorReports({
-    project,
-    start_time: start_time ? Number(start_time) : undefined,
-    end_time: end_time ? Number(end_time) : undefined,
+    project: project || undefined,
+    start_time: start_time ? new Date(start_time).getTime() : undefined,
+    end_time: end_time ? new Date(end_time).getTime() : undefined,
     page: page ? Number(page) : undefined,
     page_size: page_size ? Number(page_size) : undefined,
   });
   res.json({ status: 200, ...result });
+});
+
+/** 按项目分组统计异常数 */
+router.get('/project-stats', (req: IRequest<{}, ProjectStatsParams>, res) => {
+  const { start_time, end_time } = req.query;
+  const list = queryProjectStats({
+    start_time: start_time ? new Date(start_time).getTime() : undefined,
+    end_time: end_time ? new Date(end_time).getTime() : undefined,
+  });
+  res.json({ status: 200, list });
 });
 
 /** 查询项目列表 */

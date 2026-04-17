@@ -1,5 +1,9 @@
 #!/bin/sh
 
+set -a
+. ./.env
+set +a
+
 IMAGE_NAME="frontend-monitor-server"
 CONTAINER_NAME="frontend-monitor-server"
 VERSION=$(grep '"version"' package.json | head -1 | sed -E 's/.*"version": *"([^"]+)".*/\1/')

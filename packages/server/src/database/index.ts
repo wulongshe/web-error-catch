@@ -77,7 +77,7 @@ export function saveErrorReport(report: ErrorReport) {
 }
 
 export interface QueryErrorReportsParams {
-  project: string;
+  project?: string;
   start_time?: number;
   end_time?: number;
   page?: number;
@@ -85,13 +85,19 @@ export interface QueryErrorReportsParams {
 }
 
 /**
- * 分页查询错误报告
+ * 分页查询错误报告（project 可选）
  */
 export function queryErrorReports(params: QueryErrorReportsParams) {
   const { project, start_time, end_time, page = 1, page_size = 20 } = params;
 
-  const conditions: string[] = ['project = ?'];
-  const args: (string | number)[] = [project];
+  const conditions: string[] = [];
+  const args: (string | number)[] = [];
+
+  // 仅在传入 project 时过滤
+  if (project) {
+    conditions.push('project = ?');
+    args.push(project);
+  }
 
   if (start_time != null) {
     conditions.push('created_at >= ?');
@@ -101,7 +107,6 @@ export function queryErrorReports(params: QueryErrorReportsParams) {
     conditions.push('created_at <= ?');
     args.push(end_time);
   }
-
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   const offset = (page - 1) * page_size;
 
@@ -227,4 +232,38 @@ export function getProjects() {
   return db.prepare(`
     SELECT id, name, created_at FROM projects ORDER BY created_at ASC
   `).all() as Array<{ id: number; name: string; created_at: number }>;
+}
+
+export interface QueryProjectStatsParams {
+  start_time?: number;
+  end_time?: number;
+}
+
+/**
+ * 按项目分组统计指定时间范围内的异常数，按数量降序排列
+ */
+export function queryProjectStats(params: QueryProjectStatsParams) {
+  const { start_time, end_time } = params;
+
+  const conditions: string[] = [];
+  const args: (string | number)[] = [];
+
+  if (start_time != null) {
+    conditions.push('created_at >= ?');
+    args.push(start_time);
+  }
+  if (end_time != null) {
+    conditions.push('created_at <= ?');
+    args.push(end_time);
+  }
+
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  return db.prepare(`
+    SELECT project, COUNT(*) as count
+    FROM error_reports
+    ${where}
+    GROUP BY project
+    ORDER BY count DESC
+  `).all(...args) as Array<{ project: string; count: number }>;
 }
