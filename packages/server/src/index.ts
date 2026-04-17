@@ -9,6 +9,9 @@ async function main() {
   // 生成app实例
   const app = express();
 
+  // 信任代理
+  app.set('trust proxy', 1);
+
   // 开放uploads目录
   app.use(express.static(uploadsPath));
 
