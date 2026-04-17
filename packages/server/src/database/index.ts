@@ -39,11 +39,32 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_upload_timestamp ON uploads(timestamp);
   CREATE INDEX IF NOT EXISTS idx_upload_project ON uploads(project);
 
-  CREATE TABLE IF NOT EXISTS projects (
+  CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE,
-    created_at INTEGER NOT NULL
+    gitee_id INTEGER NOT NULL UNIQUE,
+    login TEXT NOT NULL,
+    name TEXT,
+    avatar_url TEXT,
+    email TEXT,
+    access_token TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS repos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    gitee_repo_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    description TEXT,
+    private INTEGER DEFAULT 0,
+    html_url TEXT,
+    synced_at INTEGER NOT NULL,
+    UNIQUE(user_id, gitee_repo_id)
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_repos_user_id ON repos(user_id);
 `);
 
 export interface ErrorReport {
@@ -214,24 +235,87 @@ export function markAsDeleted(id: number) {
   stmt.run(id);
 }
 
-/**
- * 记录项目（已存在则忽略）
- */
-export function upsertProject(name: string) {
-  db.prepare(`
-    INSERT INTO projects (name, created_at)
-    VALUES (?, ?)
-    ON CONFLICT(name) DO NOTHING
-  `).run(name, Date.now());
+export interface User {
+  id: number;
+  gitee_id: number;
+  login: string;
+  name: string | null;
+  avatar_url: string | null;
+  email: string | null;
+  access_token: string;
+  created_at: number;
+  updated_at: number;
 }
 
-/**
- * 查询所有项目列表
- */
-export function getProjects() {
-  return db.prepare(`
-    SELECT id, name, created_at FROM projects ORDER BY created_at ASC
-  `).all() as Array<{ id: number; name: string; created_at: number }>;
+export interface GiteeUserInfo {
+  id: number;
+  login: string;
+  name: string;
+  avatar_url: string;
+  email: string | null;
+}
+
+export function upsertUser(giteeUser: GiteeUserInfo, accessToken: string): User {
+  const now = Date.now();
+  db.prepare(`
+    INSERT INTO users (gitee_id, login, name, avatar_url, email, access_token, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(gitee_id) DO UPDATE SET
+      login = excluded.login,
+      name = excluded.name,
+      avatar_url = excluded.avatar_url,
+      email = excluded.email,
+      access_token = excluded.access_token,
+      updated_at = excluded.updated_at
+  `).run(giteeUser.id, giteeUser.login, giteeUser.name, giteeUser.avatar_url, giteeUser.email ?? null, accessToken, now, now);
+  return db.prepare('SELECT * FROM users WHERE gitee_id = ?').get(giteeUser.id) as unknown as User;
+}
+
+export function getUserById(id: number): User | undefined {
+  return db.prepare('SELECT * FROM users WHERE id = ?').get(id) as User | undefined;
+}
+
+export interface RepoRecord {
+  id: number;
+  user_id: number;
+  gitee_repo_id: number;
+  name: string;
+  full_name: string;
+  description: string | null;
+  private: number;
+  html_url: string | null;
+  synced_at: number;
+}
+
+export interface GiteeRepo {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string | null;
+  private: boolean;
+  html_url: string;
+}
+
+export function upsertRepos(userId: number, repoList: GiteeRepo[]): void {
+  const now = Date.now();
+  const stmt = db.prepare(`
+    INSERT INTO repos (user_id, gitee_repo_id, name, full_name, description, private, html_url, synced_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(user_id, gitee_repo_id) DO UPDATE SET
+      name = excluded.name,
+      full_name = excluded.full_name,
+      description = excluded.description,
+      private = excluded.private,
+      html_url = excluded.html_url,
+      synced_at = excluded.synced_at
+  `);
+  for (const repo of repoList) {
+    stmt.run(userId, repo.id, repo.name, repo.full_name, repo.description ?? null, repo.private ? 1 : 0, repo.html_url, now);
+  }
+}
+
+export function getReposByUserId(userId: number): RepoRecord[] {
+  return db.prepare('SELECT * FROM repos WHERE user_id = ? ORDER BY synced_at DESC').all(userId) as unknown as RepoRecord[];
 }
 
 export interface QueryProjectStatsParams {

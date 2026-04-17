@@ -1,8 +1,22 @@
-// 项目信息
+// 项目信息（来自 Gitee 仓库同步）
 export interface Project {
   id: number;
+  user_id: number;
+  gitee_repo_id: number;
   name: string;
-  created_at: string;
+  full_name: string;
+  description: string | null;
+  private: 0 | 1;
+  html_url: string;
+  synced_at: number;
+}
+
+// 登录用户信息
+export interface User {
+  id: number;
+  login: string;
+  name: string;
+  avatar_url: string;
 }
 
 // 项目异常统计

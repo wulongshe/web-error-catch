@@ -3,6 +3,18 @@ export default {
     dashboard: '仪表盘',
     errorTracking: '异常追踪',
   },
+  login: {
+    title: '登录',
+    subtitle: '前端异常监控平台',
+    giteeBtn: '用 Gitee 登录',
+  },
+  user: {
+    logout: '退出登录',
+  },
+  auth: {
+    exchanging: '正在登录...',
+    failed: '登录失败，请重试',
+  },
   dashboard: {
     totalProjects: '总项目数',
     monthlyErrors: '近一月异常总数',
@@ -23,6 +35,8 @@ export default {
     colProject: '项目',
     colStack: 'Stack 摘要',
     drawerTitle: '异常详情',
+    refresh: '刷新项目列表',
+    loadProjectsFail: '项目列表加载失败',
   },
   stack: {
     reportTime: '上报时间',

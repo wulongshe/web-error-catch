@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { ElMessageBox } from 'element-plus';
+import { UserFilled, SwitchButton, ArrowDown } from '@element-plus/icons-vue';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import en from 'element-plus/es/locale/lang/en';
 import type { Locale } from './i18n/index.js';
+import { getCurrentUser, logout } from './utils/auth.js';
 
 const router = useRouter();
 const route = useRoute();
@@ -12,25 +15,41 @@ const { t, locale } = useI18n();
 
 const activeMenu = computed(() => route.path);
 const elLocale = computed(() => (locale.value === 'zh' ? zhCn : en));
+const isBlankLayout = computed(() => route.meta.layout === 'blank');
+
+const user = ref(getCurrentUser());
+const userDropdownOpen = ref(false);
+router.afterEach(() => {
+  user.value = getCurrentUser();
+});
 
 function handleMenuSelect(path: string) {
   router.push(path);
 }
 
-const localeOptions = [
-  { label: '中文', value: 'zh' },
-  { label: 'English', value: 'en' },
-];
+function toggleLocale() {
+  const next: Locale = locale.value === 'zh' ? 'en' : 'zh';
+  locale.value = next;
+  localStorage.setItem('wec-locale', next);
+}
 
-function handleLocaleChange(val: Locale) {
-  locale.value = val;
-  localStorage.setItem('wec-locale', val);
+async function handleLogout() {
+  try {
+    await ElMessageBox.confirm(t('user.logout') + '?', { type: 'warning', confirmButtonText: t('user.logout'), cancelButtonText: '取消' });
+    logout();
+  } catch {
+    // 用户取消
+  }
 }
 </script>
 
 <template>
   <el-config-provider :locale="elLocale">
-    <div class="layout">
+    <template v-if="isBlankLayout">
+      <router-view />
+    </template>
+
+    <div v-else class="layout">
       <header class="header">
         <div class="header-inner">
           <span class="logo">
@@ -47,14 +66,33 @@ function handleLocaleChange(val: Locale) {
             <el-menu-item index="/">{{ t('nav.dashboard') }}</el-menu-item>
             <el-menu-item index="/errors">{{ t('nav.errorTracking') }}</el-menu-item>
           </el-menu>
-          <el-select
-            :model-value="locale"
-            class="lang-select"
-            style="width: 100px"
-            @change="handleLocaleChange"
-          >
-            <el-option v-for="opt in localeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
-          </el-select>
+
+          <!-- 语言切换：地球 icon + 语言文字 -->
+          <el-button link class="lang-btn" @click="toggleLocale">
+            <el-icon>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+                <path d="M12 2a15.3 15.3 0 0 1 0 20" />
+                <path d="M12 2a15.3 15.3 0 0 0 0 20" />
+              </svg>
+            </el-icon>
+            <span class="lang-label">{{ locale === 'zh' ? '中文' : 'EN' }}</span>
+          </el-button>
+
+          <!-- 用户头像下拉 -->
+          <el-dropdown v-if="user" trigger="click" @command="handleLogout" @visible-change="(v: boolean) => userDropdownOpen = v">
+            <div class="user-trigger">
+              <el-avatar :size="28" :src="user.avatar_url" :icon="UserFilled" />
+              <span class="user-name">{{ user.name || user.login }}</span>
+              <el-icon class="user-arrow" :class="{ 'is-open': userDropdownOpen }"><ArrowDown /></el-icon>
+            </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item :icon="SwitchButton" command="logout">{{ t('user.logout') }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </header>
       <main class="main-content">
@@ -72,8 +110,8 @@ function handleLocaleChange(val: Locale) {
 }
 
 .header {
-  background: #0f172a;
-  border-bottom: none;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -85,7 +123,7 @@ function handleLocaleChange(val: Locale) {
   padding: 0 24px;
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 16px;
 }
 
 .logo {
@@ -94,7 +132,7 @@ function handleLocaleChange(val: Locale) {
   gap: 8px;
   font-size: 16px;
   font-weight: 600;
-  color: #f8fafc;
+  color: #0f172a;
   white-space: nowrap;
 }
 
@@ -108,21 +146,52 @@ function handleLocaleChange(val: Locale) {
   border-bottom: none;
   flex: 1;
   background: transparent;
-  --el-menu-text-color: #ffffff;
+  --el-menu-text-color: #334155;
   --el-menu-active-color: #facc15;
-  --el-menu-hover-text-color: #f8fafc;
-  --el-menu-hover-bg-color: rgba(255, 255, 255, 0.06);
+  --el-menu-hover-text-color: #0f172a;
+  --el-menu-hover-bg-color: rgba(0, 0, 0, 0.04);
   --el-menu-active-bg-color: transparent;
   --el-menu-bg-color: transparent;
 }
 
-.lang-select {
+.lang-btn {
   flex-shrink: 0;
-  --el-select-border-color-hover: #facc15;
-  --el-input-border-color: rgba(255, 255, 255, 0.35);
-  --el-input-bg-color: transparent;
-  --el-input-text-color: #f8fafc;
-  --el-fill-color-blank: transparent;
+  color: #475569 !important;
+  gap: 4px;
+}
+.lang-btn:hover {
+  color: #0f172a !important;
+}
+.lang-label {
+  margin-left: 2px;
+  font-size: 13px;
+}
+
+.user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.user-arrow {
+  color: #64748b;
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+.user-arrow.is-open {
+  transform: rotate(180deg);
+}
+
+.user-name {
+  color: #0f172a;
+  font-size: 14px;
+  line-height: normal;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .main-content {

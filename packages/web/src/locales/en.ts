@@ -3,6 +3,18 @@ export default {
     dashboard: 'Dashboard',
     errorTracking: 'Error Tracking',
   },
+  login: {
+    title: 'Login',
+    subtitle: 'Frontend Error Monitor',
+    giteeBtn: 'Login with Gitee',
+  },
+  user: {
+    logout: 'Logout',
+  },
+  auth: {
+    exchanging: 'Logging in...',
+    failed: 'Login failed, please try again',
+  },
   dashboard: {
     totalProjects: 'Total Projects',
     monthlyErrors: 'Monthly Errors',
@@ -23,6 +35,8 @@ export default {
     colProject: 'Project',
     colStack: 'Stack Summary',
     drawerTitle: 'Error Details',
+    refresh: 'Refresh Projects',
+    loadProjectsFail: 'Failed to load project list',
   },
   stack: {
     reportTime: 'Report Time',

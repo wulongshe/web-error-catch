@@ -27,7 +27,7 @@ docker run \
   -v "$DATA_DIR:/app/data" \
   -v "$UPLOADS_DIR:/app/uploads" \
   -e NODE_ENV=production \
-  -d $IMAGE_NAME:$VERSION
+  -d $IMAGE_NAME:$VERSION \
+  pnpm run serve
 
 echo "Server deployed successfully"
-echo "Listening on http://127.0.0.1:$PORT"

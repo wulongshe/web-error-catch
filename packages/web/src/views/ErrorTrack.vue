@@ -2,7 +2,9 @@
 import { ref, reactive, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { getProjects, getErrorList } from '../api/index.js';
+import { ElMessage } from 'element-plus';
+import { Refresh } from '@element-plus/icons-vue';
+import { getProjects, syncRepos, getErrorList } from '../api/index.js';
 import type { Project, ErrorRecord } from '../types/index.js';
 import StackViewer from '../components/StackViewer.vue';
 
@@ -11,6 +13,7 @@ const { t } = useI18n();
 
 // 项目列表（用于下拉）
 const projects = ref<Project[]>([]);
+const projectsLoading = ref(false);
 
 // 筛选表单
 const filter = reactive({
@@ -98,12 +101,20 @@ function handleRowClick(row: ErrorRecord) {
   drawerVisible.value = true;
 }
 
-onMounted(async () => {
+async function loadProjects(sync = false) {
+  if (projectsLoading.value) return;
+  projectsLoading.value = true;
   try {
-    projects.value = await getProjects();
-  } catch (e) {
-    console.error('加载项目列表失败:', e);
+    projects.value = sync ? await syncRepos() : await getProjects();
+  } catch {
+    ElMessage.error(t('errorTrack.loadProjectsFail'));
+  } finally {
+    projectsLoading.value = false;
   }
+}
+
+onMounted(async () => {
+  loadProjects();
 
   const qProject = route.query.project;
   if (qProject && typeof qProject === 'string') {
@@ -132,17 +143,27 @@ watch(
     <el-card shadow="never" class="filter-card">
       <div class="filter-bar">
         <!-- 项目下拉 -->
-        <el-select
-          v-model="filter.project"
-          :placeholder="t('errorTrack.allProjects')"
-          clearable
-          style="width: 180px"
-          @change="handleSearch"
-          @clear="handleSearch"
-        >
-          <el-option :label="t('errorTrack.all')" value="" />
-          <el-option v-for="p in projects" :key="p.id" :label="p.name" :value="p.name" />
-        </el-select>
+        <div class="project-select-wrap">
+          <el-select
+            v-model="filter.project"
+            :placeholder="t('errorTrack.allProjects')"
+            clearable
+            filterable
+            :loading="projectsLoading"
+            style="width: 200px"
+            @change="handleSearch"
+            @clear="handleSearch"
+          >
+            <el-option :label="t('errorTrack.all')" value="" />
+            <el-option v-for="p in projects" :key="p.id" :label="p.name" :value="p.name" />
+          </el-select>
+          <el-button
+            :icon="Refresh"
+            :loading="projectsLoading"
+            :title="t('errorTrack.refresh')"
+            @click="loadProjects(true)"
+          />
+        </div>
 
         <!-- 时间范围 -->
         <el-date-picker
@@ -156,8 +177,10 @@ watch(
           @clear="handleSearch"
         />
 
-        <el-button type="primary" @click="handleSearch">{{ t('errorTrack.search') }}</el-button>
-        <el-button @click="handleReset">{{ t('errorTrack.reset') }}</el-button>
+        <div class="filter-actions">
+          <el-button type="primary" @click="handleSearch">{{ t('errorTrack.search') }}</el-button>
+          <el-button @click="handleReset">{{ t('errorTrack.reset') }}</el-button>
+        </div>
       </div>
     </el-card>
 
@@ -228,6 +251,42 @@ watch(
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.filter-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.project-select-wrap {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.project-select-wrap:hover {
+  border-color: #c0c4cc;
+}
+.project-select-wrap:focus-within {
+  border-color: #409eff;
+}
+.project-select-wrap :deep(.el-select__wrapper) {
+  box-shadow: none !important;
+  border-radius: 0;
+}
+.project-select-wrap :deep(.el-button) {
+  border: none;
+  border-left: 1px solid #dcdfe6;
+  border-radius: 0;
+  padding: 0 10px;
+  color: #606266;
+}
+.project-select-wrap :deep(.el-button:hover) {
+  background: #f5f7fa;
+  color: #409eff;
 }
 
 :deep(.el-date-editor--datetimerange) {

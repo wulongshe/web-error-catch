@@ -21,7 +21,7 @@ docker run \
   --name $CONTAINER_NAME \
   -p $PORT:80 \
   --add-host=host.docker.internal:host-gateway \
+  -e SERVER_PORT=${SERVER_PORT:-8000} \
   -d $IMAGE_NAME:$VERSION
 
 echo "Web deployed successfully"
-echo "Visit http://127.0.0.1:$PORT"

@@ -1,6 +1,7 @@
 import express, { type Request } from 'express';
-import { upload, handleUpload, handleReport, type UploadParams } from '#src/controller/index.ts';
-import { queryErrorReports, getProjects, queryProjectStats } from '#src/database/index.ts';
+import { upload, handleUpload, handleReport, type UploadParams, getGiteeAuthUrl, handleGiteeCallback, syncAndGetRepos, getReposByUserId } from '#src/controller/index.ts';
+import { queryErrorReports, queryProjectStats, getUserById } from '#src/database/index.ts';
+import { authMiddleware, type AuthRequest } from '#src/middleware/auth.ts';
 
 const router = express.Router();
 
@@ -53,7 +54,7 @@ router.post('/report', express.raw({ type: '*/*' }), async (req: IRequest<ArrayB
 });
 
 /** 分页查询异常日志（project 可选） */
-router.get('/report-list', (req: IRequest<{}, ReportListParams>, res) => {
+router.get('/report-list', authMiddleware, (req: IRequest<{}, ReportListParams>, res) => {
   const { project, start_time, end_time, page, page_size } = req.query;
   const result = queryErrorReports({
     project: project || undefined,
@@ -66,7 +67,7 @@ router.get('/report-list', (req: IRequest<{}, ReportListParams>, res) => {
 });
 
 /** 按项目分组统计异常数 */
-router.get('/project-stats', (req: IRequest<{}, ProjectStatsParams>, res) => {
+router.get('/project-stats', authMiddleware, (req: IRequest<{}, ProjectStatsParams>, res) => {
   const { start_time, end_time } = req.query;
   const list = queryProjectStats({
     start_time: start_time ? new Date(start_time).getTime() : undefined,
@@ -75,10 +76,52 @@ router.get('/project-stats', (req: IRequest<{}, ProjectStatsParams>, res) => {
   res.json({ status: 200, list });
 });
 
-/** 查询项目列表 */
-router.get('/projects', (req, res) => {
-  const list = getProjects();
-  res.json({ status: 200, list });
+/** 查询数据库中的项目列表（需认证） */
+router.get('/projects', authMiddleware, (req: AuthRequest, res) => {
+  const userId = req.user!.userId;
+  const list = getReposByUserId(userId);
+  res.json({ status: 200, total: list.length, list });
+});
+
+function getRedirectUri(req: Request): string {
+  return `${req.protocol}://${req.get('host')}/auth/gitee/callback`;
+}
+
+/** Gitee OAuth 登录跳转 */
+router.get('/auth/gitee', (req, res) => {
+  res.redirect(getGiteeAuthUrl(getRedirectUri(req)));
+});
+
+/** Gitee OAuth 回调 */
+router.get('/auth/gitee/callback', async (req, res) => {
+  const code = req.query.code as string | undefined;
+  if (!code) {
+    res.status(400).json({ status: 400, message: 'Missing code' });
+    return;
+  }
+  try {
+    const result = await handleGiteeCallback(code, getRedirectUri(req));
+    const params = new URLSearchParams({ token: result.token, user: JSON.stringify(result.user) });
+    res.redirect(`${req.protocol}://${req.get('host')}/?${params}`);
+  } catch (err) {
+    res.status(500).json({ status: 500, message: (err as Error).message });
+  }
+});
+
+/** 从 Gitee 同步仓库列表到数据库（需认证） */
+router.post('/repos/sync', authMiddleware, async (req: AuthRequest, res) => {
+  const userId = req.user!.userId;
+  const user = getUserById(userId);
+  if (!user) {
+    res.status(401).json({ status: 401, message: 'User not found' });
+    return;
+  }
+  try {
+    const list = await syncAndGetRepos(userId, user.access_token);
+    res.json({ status: 200, total: list.length, list });
+  } catch (err) {
+    res.status(500).json({ status: 500, message: (err as Error).message });
+  }
 });
 
 /** 上传文件 */

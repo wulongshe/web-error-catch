@@ -9,9 +9,12 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8000',
-        changeOrigin: true,
-        // 将 /api/xxx 代理到后端的 /xxx
+        changeOrigin: false,
         rewrite: (p) => p.replace(/^\/api/, ''),
+      },
+      '/auth': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: false,
       },
     },
   },

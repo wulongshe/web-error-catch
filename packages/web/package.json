@@ -9,6 +9,7 @@
     "preview": "vite preview --host"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "echarts": "^5.4.3",
     "element-plus": "^2.7.3",
     "vue": "^3.4.21",
