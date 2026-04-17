@@ -41,7 +41,14 @@ export async function parseStack(stack: string, contextLines = 10): Promise<Pars
       const sourcemap = `${source}.map`;
       try {
         const consumer = await getConsumer(sourcemap);
-        const position = consumer.originalPositionFor({ line: Number(line), column: Number(column) });
+        const ln = Number(line);
+        const col = Number(column);
+        let position = consumer.originalPositionFor({ line: ln, column: col });
+        // Vite/Nuxt 生成的 chunk 顶部有额外一行（banner/"use strict"），
+        // 导致 stack 的 line 比 source map mappings 多 1。查不到时回退尝试 line-1
+        if (position.source == null && ln > 1) {
+          position = consumer.originalPositionFor({ line: ln - 1, column: col });
+        }
         return { consumer, position };
       } catch {
         return null;
