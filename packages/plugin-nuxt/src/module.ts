@@ -1,5 +1,6 @@
-import { defineNuxtModule, addPlugin, addVitePlugin, addServerPlugin, createResolver } from '@nuxt/kit';
-import uploadSourceMapPlugin from '@dt-wec/plugin-vite';
+import { defineNuxtModule, addPlugin, addVitePlugin, addWebpackPlugin, addServerPlugin, createResolver } from '@nuxt/kit';
+import uploadViteSourceMapPlugin from '@dt-wec/plugin-vite';
+import UploadWebpackSourceMapPlugin from '@dt-wec/plugin-webpack';
 
 export interface ModuleOptions {
   project: string;
@@ -42,18 +43,30 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (options.sourcemap && options.uploadUrl) {
       // Nuxt 3 默认 sourcemap.client: false，必须在模块层强制开启 hidden
-      // 否则 Vite 客户端构建根本不产出 .map 文件，plugin-vite 就拿不到东西上传
+      // 否则客户端构建根本不产出 .map 文件，上传插件就拿不到东西
       nuxt.options.sourcemap = nuxt.options.sourcemap || ({} as any);
       (nuxt.options.sourcemap as any).client = 'hidden';
 
-      addVitePlugin(
-        uploadSourceMapPlugin({
-          url: options.uploadUrl,
-          project: options.project,
-          force: options.force,
-        }) as Parameters<typeof addVitePlugin>[0],
-        { client: true, server: false },
-      );
+      const isWebpack = String(nuxt.options.builder ?? '').includes('webpack');
+      if (isWebpack) {
+        addWebpackPlugin(
+          new UploadWebpackSourceMapPlugin({
+            url: options.uploadUrl,
+            project: options.project,
+            force: options.force,
+          }),
+          { client: true, server: false },
+        );
+      } else {
+        addVitePlugin(
+          uploadViteSourceMapPlugin({
+            url: options.uploadUrl,
+            project: options.project,
+            force: options.force,
+          }) as Parameters<typeof addVitePlugin>[0],
+          { client: true, server: false },
+        );
+      }
     }
   },
 });
