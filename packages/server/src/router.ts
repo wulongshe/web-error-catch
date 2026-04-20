@@ -51,8 +51,8 @@ router.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
   res.send({ status: 200, message: 'success' });
   next();
 });
-router.post('/report', express.raw({ type: '*/*' }), async (req: IRequest<ArrayBuffer>, res, next) => {
-  const data = JSON.parse(new TextDecoder('utf-8').decode(req.body)) as ReportParams;
+router.post('/report', express.json({ type: ['application/json', 'text/plain'] }), async (req: IRequest<ReportParams>, res, next) => {
+  const data = req.body;
   if (!data.project) {
     res.status(400).send({ status: 400, message: 'Missing parameter: project' });
     return;
