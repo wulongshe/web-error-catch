@@ -23,7 +23,12 @@ export default (nitroApp: NitroApp) => {
       source: 'nitro',
     };
     try {
-      await fetch(`${reportUrl}?${new URLSearchParams(payload as any)}`, { method: 'GET' });
+      // 用 POST 避免 stack 过长被 URL 截断
+      await fetch(reportUrl, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
     } catch {
       // 静默，避免上报失败再次触发 error hook
     }

@@ -11,6 +11,8 @@ interface ReportParams {
   project: string;
   stack: string;
   context_lines?: string;
+  source?: string;
+  url?: string;
 }
 
 interface ReportListParams {
@@ -33,12 +35,19 @@ router.get('/test', (req, res) => {
 
 /** 上报异常 */
 router.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
-  const { stack, project, context_lines } = req.query;
+  const { stack, project, context_lines, source, url } = req.query;
   if (!project) {
     res.status(400).send({ status: 400, message: 'Missing parameter: project' });
     return;
   }
-  await handleReport(stack, project, req.get('user-agent'), req.get('referer'), context_lines ? Number(context_lines) : undefined);
+  await handleReport(
+    stack,
+    project,
+    req.get('user-agent'),
+    url || req.get('referer'),
+    context_lines ? Number(context_lines) : undefined,
+    source,
+  );
   res.send({ status: 200, message: 'success' });
   next();
 });
@@ -48,7 +57,14 @@ router.post('/report', express.raw({ type: '*/*' }), async (req: IRequest<ArrayB
     res.status(400).send({ status: 400, message: 'Missing parameter: project' });
     return;
   }
-  await handleReport(data.stack, data.project, req.get('user-agent'), req.get('referer'), data.context_lines ? Number(data.context_lines) : undefined);
+  await handleReport(
+    data.stack,
+    data.project,
+    req.get('user-agent'),
+    data.url || req.get('referer'),
+    data.context_lines ? Number(data.context_lines) : undefined,
+    data.source,
+  );
   res.send({ status: 200, message: 'success' });
   next();
 });
