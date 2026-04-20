@@ -41,7 +41,7 @@ export default {
   stack: {
     reportTime: 'Report Time',
     project: 'Project',
-    parsedStack: 'Parsed Stack',
+    sourceStack: 'Source Stack',
     sourceContext: 'Source Context',
     minifiedStack: 'Minified Stack',
     none: '(None)',

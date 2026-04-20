@@ -39,9 +39,9 @@ function getSourceLines(): { lineNo: number; code: string; highlight: boolean }[
       <el-descriptions-item label="UserAgent">{{ record.user_agent }}</el-descriptions-item>
     </el-descriptions>
 
-    <!-- 解析后的 Stack -->
+    <!-- 源码错误栈 -->
     <div class="section">
-      <div class="section-title">{{ t('stack.parsedStack') }}</div>
+      <div class="section-title">{{ t('stack.sourceStack') }}</div>
       <pre class="parsed-stack mono">{{ record.parsed_stack || t('stack.none') }}</pre>
     </div>
 
@@ -61,7 +61,7 @@ function getSourceLines(): { lineNo: number; code: string; highlight: boolean }[
       </div>
     </div>
 
-    <!-- 混淆后 Stack -->
+    <!-- 混淆后错误栈 -->
     <div class="section">
       <div class="section-title">{{ t('stack.minifiedStack') }}</div>
       <pre class="raw-stack mono">{{ record.stack || t('stack.none') }}</pre>

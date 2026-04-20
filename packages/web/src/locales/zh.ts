@@ -33,7 +33,7 @@ export default {
     reset: '重置',
     colTime: '创建时间',
     colProject: '项目',
-    colStack: 'Stack 摘要',
+    colStack: '错误栈摘要',
     drawerTitle: '异常详情',
     refresh: '刷新项目列表',
     loadProjectsFail: '项目列表加载失败',
@@ -41,9 +41,9 @@ export default {
   stack: {
     reportTime: '上报时间',
     project: '项目',
-    parsedStack: '解析后的 Stack',
+    sourceStack: '源码错误栈',
     sourceContext: '源码片段',
-    minifiedStack: '混淆后 Stack',
+    minifiedStack: '混淆后错误栈',
     none: '（暂无）',
   },
 };
