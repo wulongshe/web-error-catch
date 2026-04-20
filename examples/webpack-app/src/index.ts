@@ -2,7 +2,7 @@ import { register } from '@dt-wec/sdk';
 import { setupCounter } from './trigger';
 
 register({
-  project: 'webpack-app',
+  project: 'admintools',
   url: 'http://127.0.0.1:8000/report',
 });
 

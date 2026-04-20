@@ -17,9 +17,9 @@ export function catchUnhandledrejection({ project, url }: Options) {
   window.addEventListener(
     'unhandledrejection',
     (event) => {
-      const reason: any = event.reason;
-      const stack = reason?.stack ?? (typeof reason === 'string' ? reason : JSON.stringify(reason));
-      send(url, { project, stack });
+      // const reason: any = event.reason;
+      // const stack = reason?.stack ?? (typeof reason === 'string' ? reason : JSON.stringify(reason));
+      // send(url, { project, stack });
     },
     true,
   );
