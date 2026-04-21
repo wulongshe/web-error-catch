@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     UploadSourceMapPlugin({
       url: 'http://127.0.0.1:8000/upload',
-      project: 'ebk-web',
+      project: 'tourmind_cn/ebk-web',
     }) as PluginOption,
   ],
 });

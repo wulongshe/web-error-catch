@@ -7,6 +7,12 @@ const router = express.Router();
 
 type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
 
+/** project 必须为 "owner/name" 格式 */
+function isValidProject(project: string): boolean {
+  const parts = project.split('/');
+  return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
+}
+
 interface ReportParams {
   project: string;
   stack: string;
@@ -40,6 +46,10 @@ router.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
     res.status(400).send({ status: 400, message: 'Missing parameter: project' });
     return;
   }
+  if (!isValidProject(project)) {
+    res.status(400).send({ status: 400, message: 'Invalid project format, expected "owner/name"' });
+    return;
+  }
   await handleReport(
     stack,
     project,
@@ -55,6 +65,10 @@ router.post('/report', express.json({ type: ['application/json', 'text/plain'] }
   const data = req.body;
   if (!data.project) {
     res.status(400).send({ status: 400, message: 'Missing parameter: project' });
+    return;
+  }
+  if (!isValidProject(data.project)) {
+    res.status(400).send({ status: 400, message: 'Invalid project format, expected "owner/name"' });
     return;
   }
   await handleReport(
@@ -147,6 +161,10 @@ router.post('/upload', upload.array('file'), async (req: IRequest<{}, UploadPara
 
   if (!project || !timestamp || !files || files.length === 0) {
     res.status(400).send({ status: 400, message: 'Missing parameters: project, timestamp, or files' });
+    return;
+  }
+  if (!isValidProject(String(project))) {
+    res.status(400).send({ status: 400, message: 'Invalid project format, expected "owner/name"' });
     return;
   }
 

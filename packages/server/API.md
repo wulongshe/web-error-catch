@@ -47,7 +47,20 @@
 
 ## 公开接口（无需认证）
 
-### 1. 跳转 Gitee 登录
+### 1. 健康检查
+
+```
+GET /test
+```
+
+**响应**：
+```json
+{ "status": 200, "message": "ok" }
+```
+
+---
+
+### 2. 跳转 Gitee 登录
 
 ```
 GET /auth/gitee
@@ -61,23 +74,23 @@ GET /auth/gitee
 ```javascript
 window.location.href = '/auth/gitee';
 // 或
-window.location.href = 'http://localhost:8080/auth/gitee';
+window.location.href = 'http://localhost:8000/auth/gitee';
 ```
 
 ---
 
-### 2. OAuth 回调处理
+### 3. OAuth 回调处理
 
 ```
 GET /auth/gitee/callback?code=xxx
 ```
 
-**说明**：Gitee 授权完成后的回调端点（由 Gitee 自动调用，无需前端手动请求）。服务器完成 Token 换取后，302 重定向回前端首页并附带登录信息。
+**说明**：Gitee 授权完成后的回调端点（由 Gitee 自动调用，无需前端手动请求）。服务器完成 Token 换取后，302 重定向回前端首页并附带登录信息。回调地址根据当前服务器的 host 动态生成。
 
 **响应**：302 重定向至前端首页
 
 ```
-Location: http://localhost:5173/?token=eyJhbGci...&user=%7B%22id%22%3A1%2C...%7D
+Location: http://<host>/?token=eyJhbGci...&user=%7B%22id%22%3A1%2C...%7D
 ```
 
 **前端处理**（在首页/路由入口处）：
@@ -97,31 +110,43 @@ if (token) {
 
 ---
 
-### 3. 上报前端异常
+### 4. 上报前端异常
 
 #### GET 方式
 ```
-GET /report?project=<project>&stack=<stack>&context_lines=<lines>
+GET /report?project=<owner/name>&stack=<stack>&context_lines=<lines>&source=<source>&url=<url>
 ```
 
 #### POST 方式
 ```
 POST /report
 Content-Type: application/json
+```
+或（用于 `sendBeacon`，避免跨域预检请求）：
+```
+POST /report
+Content-Type: text/plain
+```
 
+**请求体**：
+```json
 {
-  "project": "web-app",
+  "project": "shewulong/web-app",
   "stack": "Error: xxx\n  at func (file.js:10:5)\n...",
-  "context_lines": 5
+  "context_lines": 5,
+  "source": "nitro",
+  "url": "https://myapp.com/dashboard"
 }
 ```
 
 **参数说明**：
 | 参数 | 类型 | 必须 | 说明 |
 |------|------|------|------|
-| project | string | ✓ | 项目名称 |
-| stack | string | ✓ | 错误堆栈（通常来自 Error.stack） |
+| project | string | ✓ | 项目名称，格式为 `owner/name`（如 `shewulong/web-app`） |
+| stack | string | | 错误堆栈（通常来自 `Error.stack`） |
 | context_lines | number | | 提取源代码上下文的行数（默认 3） |
+| source | string | | 错误来源类型，`nitro` 表示 Nuxt/Nitro 服务端错误，使用本地文件路径解析；否则使用 Source Map 解析 |
+| url | string | | 错误发生的页面 URL；未传时自动从 `Referer` 请求头读取 |
 
 **响应示例**：
 ```json
@@ -131,24 +156,26 @@ Content-Type: application/json
 **常见错误**：
 ```json
 { "status": 400, "message": "Missing parameter: project" }
+{ "status": 400, "message": "Invalid project format, expected \"owner/name\"" }
 ```
 
 **SDK 集成示例**：
 ```javascript
 window.addEventListener('error', (event) => {
   navigator.sendBeacon('/report', JSON.stringify({
-    project: 'my-app',
+    project: 'shewulong/my-app',
     stack: event.error?.stack || 'Unknown error',
+    url: location.href,
   }));
 });
 ```
 
 ---
 
-### 4. 上传 Source Map 文件
+### 5. 上传 Source Map 文件
 
 ```
-POST /upload?project=<project>&timestamp=<timestamp>
+POST /upload?project=<owner/name>&timestamp=<timestamp>
 Content-Type: multipart/form-data
 
 file: (上传文件，支持多个)
@@ -157,7 +184,7 @@ file: (上传文件，支持多个)
 **参数说明**：
 | 参数 | 类型 | 位置 | 必须 | 说明 |
 |------|------|------|------|------|
-| project | string | query | ✓ | 项目名称 |
+| project | string | query | ✓ | 项目名称，格式为 `owner/name`（URL 编码后传递） |
 | timestamp | number | query | ✓ | 时间戳（毫秒，用于版本控制） |
 | file | File[] | body | ✓ | 文件列表（multipart） |
 
@@ -176,7 +203,7 @@ const formData = new FormData();
 formData.append('file', mapFile1);
 formData.append('file', mapFile2);
 
-fetch(`/upload?project=my-app&timestamp=${Date.now()}`, {
+fetch(`/upload?project=${encodeURIComponent('shewulong/my-app')}&timestamp=${Date.now()}`, {
   method: 'POST',
   body: formData
 });
@@ -260,16 +287,16 @@ POST /repos/sync
 
 ---
 
-### 2. 分页查询异常日志
+### 3. 分页查询异常日志
 
 ```
-GET /report-list?project=<project>&start_time=<date>&end_time=<date>&page=<num>&page_size=<num>
+GET /report-list?project=<owner/name>&start_time=<date>&end_time=<date>&page=<num>&page_size=<num>
 ```
 
 **参数说明**：
 | 参数 | 类型 | 必须 | 说明 | 默认值 |
 |------|------|------|------|--------|
-| project | string | | 项目名称（模糊匹配） | 无 |
+| project | string | | 项目名称，格式为 `owner/name`，精确匹配 | 无 |
 | start_time | string | | ISO 8601 日期 | 无 |
 | end_time | string | | ISO 8601 日期 | 无 |
 | page | number | | 页码 | 1 |
@@ -285,7 +312,7 @@ GET /report-list?project=<project>&start_time=<date>&end_time=<date>&page=<num>&
   "list": [
     {
       "id": 1,
-      "project": "my-app",
+      "project": "shewulong/my-app",
       "stack": "Error: Cannot read property 'xxx' of undefined\n    at handleClick (app.js:42:15)",
       "parsed_stack": "Error: Cannot read property 'xxx' of undefined\n    at handleClick (src/components/Button.jsx:42:15)",
       "created_at": 1713200000000,
@@ -305,17 +332,17 @@ GET /report-list?project=<project>&start_time=<date>&end_time=<date>&page=<num>&
 | project | string | 项目名称 |
 | stack | string | 原始压缩堆栈 |
 | parsed_stack | string | 通过 source-map 反混淆后的堆栈 |
-| created_at | number | 时间戳 |
+| created_at | number | 时间戳（毫秒） |
 | user_agent | string | 浏览器 UA |
 | url | string | 页面 URL |
 | source_context | string | 源代码上下文（前后各几行） |
-| source_context_line | number | 错误所在行在上下文中的位置 |
+| source_context_line | number | 错误所在行在上下文中的位置（1-based） |
 
 **前端查询示例**：
 ```javascript
 const token = localStorage.getItem('token');
 const params = new URLSearchParams({
-  project: 'my-app',
+  project: 'shewulong/my-app',
   start_time: '2024-04-01',
   end_time: '2024-04-15',
   page: 1,
@@ -330,7 +357,7 @@ console.log(`共 ${data.total} 个错误，当前第 ${data.page} 页`);
 
 ---
 
-### 3. 按项目统计异常数
+### 4. 按项目统计异常数
 
 ```
 GET /project-stats?start_time=<date>&end_time=<date>
@@ -347,9 +374,9 @@ GET /project-stats?start_time=<date>&end_time=<date>
 {
   "status": 200,
   "list": [
-    { "project": "my-app", "count": 156 },
-    { "project": "web-service", "count": 89 },
-    { "project": "admin-panel", "count": 42 }
+    { "project": "shewulong/my-app", "count": 156 },
+    { "project": "shewulong/web-service", "count": 89 },
+    { "project": "org/admin-panel", "count": 42 }
   ]
 }
 ```
@@ -445,6 +472,7 @@ async function loadProjects() {
 }
 
 // 4. 展示异常列表
+// projectName 格式为 "owner/name"，如 "shewulong/my-app"
 async function loadErrorReports(projectName) {
   const token = localStorage.getItem('token');
   const params = new URLSearchParams({
@@ -469,8 +497,9 @@ async function loadErrorReports(projectName) {
 
 ## 其他注意事项
 
-1. **CORS**：生产环境需配置适当的 CORS 策略
-2. **时间格式**：所有时间戳为毫秒级 Unix 时间戳；日期参数支持 ISO 8601 格式（如 `2024-04-15`）
-3. **分页**：默认每页 20 条，最多可请求 100 条
-4. **Rate Limit**：当前无速率限制，生产环境建议添加
-5. **Token 刷新**：当前 JWT 过期后需重新登录，暂无刷新机制
+1. **服务端口**：默认监听 `8000`
+2. **CORS**：`/report` 接口支持 `Content-Type: text/plain`，使 `sendBeacon` 可免预检请求跨域上报；生产环境其余接口需配置适当的 CORS 策略
+3. **时间格式**：所有时间戳为毫秒级 Unix 时间戳；日期参数支持 ISO 8601 格式（如 `2024-04-15`）
+4. **分页**：默认每页 20 条，最多可请求 100 条
+5. **Rate Limit**：当前无速率限制，生产环境建议添加
+6. **Token 刷新**：当前 JWT 过期后需重新登录，暂无刷新机制

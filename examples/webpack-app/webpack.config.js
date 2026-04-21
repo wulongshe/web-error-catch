@@ -27,7 +27,7 @@ export default {
     }),
     new UploadSourceMapPlugin({
       url: 'http://127.0.0.1:8000/upload',
-      project: 'admintools',
+      project: 'tourmind_cn/admintools',
     }),
   ],
   // devtool: 'source-map',

@@ -155,7 +155,7 @@ watch(
             @clear="handleSearch"
           >
             <el-option :label="t('errorTrack.all')" value="" />
-            <el-option v-for="p in projects" :key="p.id" :label="p.name" :value="p.name" />
+            <el-option v-for="p in projects" :key="p.id" :label="p.full_name" :value="p.full_name" />
           </el-select>
           <el-button
             :icon="Refresh"
@@ -198,7 +198,7 @@ watch(
         <el-table-column :label="t('errorTrack.colTime')" width="170" prop="created_at">
           <template #default="{ row }">{{ formatDateTime(row.created_at) }}</template>
         </el-table-column>
-        <el-table-column :label="t('errorTrack.colProject')" width="120" prop="project" show-overflow-tooltip />
+        <el-table-column :label="t('errorTrack.colProject')" width="200" prop="project" show-overflow-tooltip />
         <el-table-column label="URL" min-width="160" prop="url" show-overflow-tooltip />
         <el-table-column label="UserAgent" min-width="160" prop="user_agent" show-overflow-tooltip />
         <el-table-column :label="t('errorTrack.colStack')" min-width="220">
