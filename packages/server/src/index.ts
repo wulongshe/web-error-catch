@@ -1,6 +1,5 @@
 import express from 'express';
 import router from '#src/router.ts';
-import { uploadsPath } from '#src/controller/index.ts';
 import { logger } from '#src/logger.ts';
 
 const PORT = 8000;
@@ -11,9 +10,6 @@ async function main() {
 
   // 信任代理
   app.set('trust proxy', 1);
-
-  // 开放uploads目录
-  app.use(express.static(uploadsPath));
 
   // 配置插件
   app.use(express.json());
