@@ -1,39 +1,58 @@
-/* reset */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* 层级顺序：越后越高优先级，utilities 可覆盖 element-plus */
+@layer theme, base, element-plus, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "element-plus/dist/index.css" layer(element-plus);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* 设计令牌 */
+@theme {
+  /* 品牌色 */
+  --color-brand: #0f172a;
+  --color-brand-soft: #334155;
+  --color-accent: #facc15;
+
+  /* Element Plus 对齐色（用于 :deep 穿透场景） */
+  --color-ep-blue: #409eff;
+  --color-ep-border: #dcdfe6;
+  --color-ep-border-light: #e4e7ed;
+  --color-ep-text: #606266;
+  --color-ep-text-placeholder: #909399;
+  --color-ep-text-disabled: #c0c4cc;
+
+  /* 代码块配色 */
+  --color-code-bg: #1e1e1e;
+  --color-code-fg: #d4d4d4;
+  --color-code-highlight: #fffacd;
+
+  /* 字体栈 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
 }
 
-html,
-body {
-  height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 14px;
-  color: #333;
-  background: #f5f7fa;
+/* 全局基线 */
+@layer base {
+  html,
+  body {
+    @apply h-full font-sans text-sm text-slate-800 bg-slate-50;
+  }
+  #app {
+    @apply h-full flex flex-col;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
-#app {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* 全局卡片阴影统一 */
-.el-card {
-  border-radius: 8px;
-}
-
-/* 代码等宽字体 */
-.mono {
-  font-family: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
-  font-size: 13px;
+/* 全局组件级调整 */
+@layer components {
+  .el-card {
+    @apply rounded-lg;
+  }
+  .mono {
+    @apply font-mono text-[13px];
+  }
 }

@@ -9,62 +9,16 @@ function handleLogin() {
 </script>
 
 <template>
-  <div class="login-page">
-    <el-card class="login-card" shadow="always">
-      <div class="login-body">
-        <img src="/favicon.svg" class="login-logo" alt="logo" />
-        <h1 class="login-title">Frontend Monitor</h1>
-        <p class="login-subtitle">{{ t('login.subtitle') }}</p>
-        <el-button type="primary" size="large" class="gitee-btn" @click="handleLogin">
+  <div class="min-h-screen bg-brand flex items-center justify-center">
+    <el-card class="w-[380px] rounded-xl" shadow="always">
+      <div class="flex flex-col items-center gap-4 py-6 px-4">
+        <img src="/favicon.svg" class="w-14 h-14" alt="logo" />
+        <h1 class="text-[22px] font-bold text-brand">Frontend Monitor</h1>
+        <p class="text-slate-500 text-sm">{{ t('login.subtitle') }}</p>
+        <el-button type="primary" size="large" class="!w-full !mt-2" @click="handleLogin">
           {{ t('login.giteeBtn') }}
         </el-button>
       </div>
     </el-card>
   </div>
 </template>
-
-<style scoped>
-.login-page {
-  min-height: 100vh;
-  background: #0f172a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-card {
-  width: 380px;
-  border-radius: 12px;
-}
-
-.login-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 24px 16px;
-}
-
-.login-logo {
-  width: 56px;
-  height: 56px;
-}
-
-.login-title {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.login-subtitle {
-  margin: 0;
-  color: #64748b;
-  font-size: 14px;
-}
-
-.gitee-btn {
-  width: 100%;
-  margin-top: 8px;
-}
-</style>

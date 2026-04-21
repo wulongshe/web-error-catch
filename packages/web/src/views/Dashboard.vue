@@ -95,116 +95,71 @@ onMounted(fetchData);
 </script>
 
 <template>
-  <div class="dashboard">
+  <div class="flex flex-col gap-5">
     <!-- 统计卡片区 -->
-    <el-row :gutter="16" class="stat-row">
+    <el-row :gutter="16">
       <el-col :span="6">
         <el-card shadow="hover">
-          <div v-if="loading" class="stat-skeleton">
+          <div v-if="loading" class="py-2">
             <el-skeleton :rows="1" animated />
           </div>
-          <div v-else class="stat-item">
-            <div class="stat-label">{{ t('dashboard.totalProjects') }}</div>
-            <div class="stat-value">{{ totalProjects }}</div>
+          <div v-else class="text-center py-2">
+            <div class="text-[13px] text-ep-text-placeholder mb-2">{{ t('dashboard.totalProjects') }}</div>
+            <div class="text-[32px] font-bold text-slate-800">{{ totalProjects }}</div>
           </div>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          <div v-if="loading" class="stat-skeleton">
+          <div v-if="loading" class="py-2">
             <el-skeleton :rows="1" animated />
           </div>
-          <div v-else class="stat-item">
-            <div class="stat-label">{{ t('dashboard.monthlyErrors') }}</div>
-            <div class="stat-value">{{ monthlyTotal }}</div>
+          <div v-else class="text-center py-2">
+            <div class="text-[13px] text-ep-text-placeholder mb-2">{{ t('dashboard.monthlyErrors') }}</div>
+            <div class="text-[32px] font-bold text-slate-800">{{ monthlyTotal }}</div>
           </div>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          <div v-if="loading" class="stat-skeleton">
+          <div v-if="loading" class="py-2">
             <el-skeleton :rows="1" animated />
           </div>
-          <div v-else class="stat-item">
-            <div class="stat-label">{{ t('dashboard.todayErrors') }}</div>
-            <div class="stat-value">{{ todayTotal }}</div>
+          <div v-else class="text-center py-2">
+            <div class="text-[13px] text-ep-text-placeholder mb-2">{{ t('dashboard.todayErrors') }}</div>
+            <div class="text-[32px] font-bold text-slate-800">{{ todayTotal }}</div>
           </div>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="hover">
-          <div v-if="loading" class="stat-skeleton">
+          <div v-if="loading" class="py-2">
             <el-skeleton :rows="1" animated />
           </div>
-          <div v-else class="stat-item">
-            <div class="stat-label">{{ t('dashboard.totalErrors') }}</div>
-            <div class="stat-value">{{ allTotal }}</div>
+          <div v-else class="text-center py-2">
+            <div class="text-[13px] text-ep-text-placeholder mb-2">{{ t('dashboard.totalErrors') }}</div>
+            <div class="text-[32px] font-bold text-slate-800">{{ allTotal }}</div>
           </div>
         </el-card>
       </el-col>
     </el-row>
 
     <!-- 柱状图 -->
-    <el-card shadow="never" class="chart-card">
+    <el-card shadow="never" class="flex-1">
       <template #header>
         <span>{{ t('dashboard.chartTitle') }}</span>
       </template>
-      <div v-if="loading" class="chart-skeleton">
+      <div v-if="loading" class="h-[340px] py-4">
         <el-skeleton :rows="6" animated />
       </div>
-      <v-chart
-        v-else
-        class="chart"
-        :option="chartOption"
-        autoresize
-        @click="onChartClick"
-      />
+      <div v-else class="h-[340px]">
+        <v-chart
+          class="w-full h-full"
+          :option="chartOption"
+          autoresize
+          @click="onChartClick"
+        />
+      </div>
     </el-card>
   </div>
 </template>
-
-<style scoped>
-.dashboard {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.stat-row {
-  margin-bottom: 0;
-}
-
-.stat-skeleton {
-  padding: 8px 0;
-}
-
-.stat-item {
-  text-align: center;
-  padding: 8px 0;
-}
-
-.stat-label {
-  font-size: 13px;
-  color: #909399;
-  margin-bottom: 8px;
-}
-
-.stat-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: #303133;
-}
-
-.chart-card {
-  flex: 1;
-}
-
-.chart-skeleton {
-  height: 340px;
-  padding: 16px 0;
-}
-
-.chart {
-  height: 340px;
-}
-</style>

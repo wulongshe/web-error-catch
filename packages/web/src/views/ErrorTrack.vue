@@ -138,12 +138,12 @@ watch(
 </script>
 
 <template>
-  <div class="error-track">
+  <div class="flex flex-col gap-4">
     <!-- 筛选区 -->
     <el-card shadow="never" class="filter-card">
-      <div class="filter-bar">
+      <div class="flex items-center flex-wrap gap-3">
         <!-- 项目下拉 -->
-        <div class="project-select-wrap">
+        <div class="project-select-wrap flex items-stretch border border-ep-border rounded hover:border-ep-text-disabled focus-within:border-ep-blue transition-colors overflow-hidden">
           <el-select
             v-model="filter.project"
             :placeholder="t('errorTrack.allProjects')"
@@ -177,7 +177,7 @@ watch(
           @clear="handleSearch"
         />
 
-        <div class="filter-actions">
+        <div class="ml-auto flex gap-2">
           <el-button type="primary" @click="handleSearch">{{ t('errorTrack.search') }}</el-button>
           <el-button @click="handleReset">{{ t('errorTrack.reset') }}</el-button>
         </div>
@@ -203,13 +203,13 @@ watch(
         <el-table-column label="UserAgent" min-width="160" prop="user_agent" show-overflow-tooltip />
         <el-table-column :label="t('errorTrack.colStack')" min-width="220">
           <template #default="{ row }">
-            <span class="stack-snippet">{{ (row.parsed_stack || row.stack)?.slice(0, 100) }}</span>
+            <span class="font-mono text-xs text-ep-text">{{ (row.parsed_stack || row.stack)?.slice(0, 100) }}</span>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页 -->
-      <div class="pagination-wrap">
+      <div class="flex justify-end p-4">
         <el-pagination
           v-model:current-page="pagination.page"
           v-model:page-size="pagination.page_size"
@@ -236,81 +236,29 @@ watch(
 </template>
 
 <style scoped>
-.error-track {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+@reference "../style.css";
 
 .filter-card :deep(.el-card__body) {
-  padding: 16px;
+  @apply p-4;
 }
-
-.filter-bar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.filter-actions {
-  margin-left: auto;
-  display: flex;
-  gap: 8px;
-}
-
-.project-select-wrap {
-  display: flex;
-  align-items: stretch;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  overflow: hidden;
-  transition: border-color 0.2s;
-}
-.project-select-wrap:hover {
-  border-color: #c0c4cc;
-}
-.project-select-wrap:focus-within {
-  border-color: #409eff;
+.table-card :deep(.el-card__body) {
+  @apply p-0;
 }
 .project-select-wrap :deep(.el-select__wrapper) {
   box-shadow: none !important;
   border-radius: 0;
 }
 .project-select-wrap :deep(.el-button) {
-  border: none;
-  border-left: 1px solid #dcdfe6;
-  border-radius: 0;
-  padding: 0 10px;
-  color: #606266;
+  @apply border-0 border-l border-solid border-ep-border rounded-none px-2.5 text-ep-text;
 }
 .project-select-wrap :deep(.el-button:hover) {
-  background: #f5f7fa;
-  color: #409eff;
+  @apply bg-slate-50 text-ep-blue;
 }
-
 :deep(.el-date-editor--datetimerange) {
   flex: 0 0 380px !important;
   width: 380px !important;
 }
-
-.table-card :deep(.el-card__body) {
-  padding: 0;
-}
-
 .clickable-table :deep(.el-table__row) {
-  cursor: pointer;
-}
-
-.stack-snippet {
-  font-family: Consolas, 'Courier New', monospace;
-  font-size: 12px;
-  color: #606266;
-}
-
-.pagination-wrap {
-  display: flex;
-  justify-content: flex-end;
-  padding: 16px;
+  @apply cursor-pointer;
 }
 </style>

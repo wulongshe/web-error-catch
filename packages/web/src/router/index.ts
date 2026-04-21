@@ -26,7 +26,8 @@ consumeOAuthParams();
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: Dashboard, meta: { requiresAuth: true } },
+    { path: '/', redirect: '/dashboard' },
+    { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
     { path: '/errors', component: ErrorTrack, meta: { requiresAuth: true } },
     { path: '/login', component: Login, meta: { layout: 'blank' } },
   ],
@@ -34,7 +35,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   if (to.meta.requiresAuth && !getToken()) return '/login';
-  if (to.path === '/login' && getToken()) return '/';
+  if (to.path === '/login' && getToken()) return '/dashboard';
 });
 
 export default router;

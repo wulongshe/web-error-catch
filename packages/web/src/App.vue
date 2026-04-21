@@ -49,11 +49,11 @@ async function handleLogout() {
       <router-view />
     </template>
 
-    <div v-else class="layout">
-      <header class="header">
-        <div class="header-inner">
-          <span class="logo">
-            <img src="/favicon.svg" class="logo-icon" alt="logo" />
+    <div v-else class="min-h-screen flex flex-col">
+      <header class="bg-white border-b border-slate-200 sticky top-0 z-[100]">
+        <div class="max-w-[1400px] mx-auto px-6 flex items-center gap-4 h-16">
+          <span class="flex items-center gap-2 text-base font-semibold text-brand whitespace-nowrap">
+            <img src="/favicon.svg" class="w-7 h-7 shrink-0" alt="logo" />
             Frontend Monitor
           </span>
           <el-menu
@@ -63,12 +63,12 @@ async function handleLogout() {
             @select="handleMenuSelect"
             class="nav-menu"
           >
-            <el-menu-item index="/">{{ t('nav.dashboard') }}</el-menu-item>
+            <el-menu-item index="/dashboard">{{ t('nav.dashboard') }}</el-menu-item>
             <el-menu-item index="/errors">{{ t('nav.errorTracking') }}</el-menu-item>
           </el-menu>
 
           <!-- 语言切换：地球 icon + 语言文字 -->
-          <el-button link class="lang-btn" @click="toggleLocale">
+          <el-button link class="shrink-0 !text-slate-600 hover:!text-brand !gap-1" @click="toggleLocale">
             <el-icon>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <circle cx="12" cy="12" r="10" />
@@ -77,15 +77,18 @@ async function handleLogout() {
                 <path d="M12 2a15.3 15.3 0 0 0 0 20" />
               </svg>
             </el-icon>
-            <span class="lang-label">{{ locale === 'zh' ? '中文' : 'EN' }}</span>
+            <span class="ml-0.5 text-[13px]">{{ locale === 'zh' ? '中文' : 'EN' }}</span>
           </el-button>
 
           <!-- 用户头像下拉 -->
           <el-dropdown v-if="user" trigger="click" @command="handleLogout" @visible-change="(v: boolean) => userDropdownOpen = v">
-            <div class="user-trigger">
+            <div class="flex items-center gap-1.5 cursor-pointer shrink-0">
               <el-avatar :size="28" :src="user.avatar_url" :icon="UserFilled" />
-              <span class="user-name">{{ user.name || user.login }}</span>
-              <el-icon class="user-arrow" :class="{ 'is-open': userDropdownOpen }"><ArrowDown /></el-icon>
+              <span class="text-brand text-sm max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap">{{ user.name || user.login }}</span>
+              <el-icon
+                class="text-slate-500 text-xs transition-transform duration-200"
+                :class="{ 'rotate-180': userDropdownOpen }"
+              ><ArrowDown /></el-icon>
             </div>
             <template #dropdown>
               <el-dropdown-menu>
@@ -95,7 +98,7 @@ async function handleLogout() {
           </el-dropdown>
         </div>
       </header>
-      <main class="main-content">
+      <main class="flex-1 p-6 max-w-[1400px] w-full mx-auto">
         <router-view />
       </main>
     </div>
@@ -103,45 +106,7 @@ async function handleLogout() {
 </template>
 
 <style scoped>
-.layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #0f172a;
-  white-space: nowrap;
-}
-
-.logo-icon {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-}
-
+/* Element Plus 菜单 CSS 变量定制 —— 无对应工具类 */
 .nav-menu {
   border-bottom: none;
   flex: 1;
@@ -152,53 +117,5 @@ async function handleLogout() {
   --el-menu-hover-bg-color: rgba(0, 0, 0, 0.04);
   --el-menu-active-bg-color: transparent;
   --el-menu-bg-color: transparent;
-}
-
-.lang-btn {
-  flex-shrink: 0;
-  color: #475569 !important;
-  gap: 4px;
-}
-.lang-btn:hover {
-  color: #0f172a !important;
-}
-.lang-label {
-  margin-left: 2px;
-  font-size: 13px;
-}
-
-.user-trigger {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.user-arrow {
-  color: #64748b;
-  font-size: 12px;
-  transition: transform 0.2s;
-}
-.user-arrow.is-open {
-  transform: rotate(180deg);
-}
-
-.user-name {
-  color: #0f172a;
-  font-size: 14px;
-  line-height: normal;
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.main-content {
-  flex: 1;
-  padding: 24px;
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
 }
 </style>
