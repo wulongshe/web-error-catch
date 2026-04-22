@@ -6,7 +6,7 @@ import { register } from '@dt-wec/sdk';
 
 register({
   project: 'tourmind_cn/ebk-web',
-  url: 'http://127.0.0.1:8000/report',
+  url: 'http://127.0.0.1:8000/api/report',
 });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `

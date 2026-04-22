@@ -1,5 +1,5 @@
 import express from 'express';
-import router from '#src/router.ts';
+import { apiRouter, authRouter } from '#src/router.ts';
 import { logger } from '#src/logger.ts';
 
 const PORT = 8000;
@@ -16,7 +16,8 @@ async function main() {
   app.use(express.urlencoded({ extended: false }));
 
   // 配置路由
-  app.use(router);
+  app.use('/api', apiRouter);
+  app.use('/auth', authRouter);
 
   // 开启服务，监听端口
   app.listen(PORT, () => {

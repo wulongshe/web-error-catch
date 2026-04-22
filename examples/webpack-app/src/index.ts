@@ -3,7 +3,7 @@ import { setupCounter } from './trigger';
 
 register({
   project: 'tourmind_cn/admintools',
-  url: 'http://127.0.0.1:8000/report',
+  url: 'http://127.0.0.1:8000/api/report',
 });
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `

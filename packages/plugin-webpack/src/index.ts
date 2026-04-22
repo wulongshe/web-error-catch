@@ -5,13 +5,12 @@ import type { Compilation, Compiler } from 'webpack';
 export interface UploadSourceMapPluginOptions {
   url: string;
   project: string;
-  force?: boolean;
 }
 
 export default class UploadSourceMapPlugin {
   constructor(private options: UploadSourceMapPluginOptions) {}
   apply(compiler: Compiler) {
-    if (!this.options.force && compiler.options.mode !== 'production') return;
+    if (compiler.options.mode !== 'production') return;
     compiler.options.devtool = 'hidden-source-map';
 
     compiler.hooks.emit.tapPromise('UploadSourceMapPlugin', async (compilation: Compilation) => {

@@ -3,7 +3,8 @@ import { upload, handleUpload, handleReport, type UploadParams, getGiteeAuthUrl,
 import { queryErrorReports, queryProjectStats, getUserById } from '#src/database/index.ts';
 import { authMiddleware, type AuthRequest } from '#src/middleware/auth.ts';
 
-const router = express.Router();
+export const apiRouter = express.Router();
+export const authRouter = express.Router();
 
 type IRequest<T = {}, P = {}> = Request<{}, any, T, P, Record<string, any>>;
 
@@ -35,12 +36,12 @@ interface ProjectStatsParams {
 }
 
 /** 测试接口 */
-router.get('/test', (req, res) => {
+apiRouter.get('/test', (req, res) => {
   res.json({ status: 200, message: 'ok' });
 });
 
 /** 上报异常 */
-router.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
+apiRouter.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
   const { stack, project, context_lines, source, url } = req.query;
   if (!project) {
     res.status(400).send({ status: 400, message: 'Missing parameter: project' });
@@ -61,7 +62,7 @@ router.get('/report', async (req: IRequest<{}, ReportParams>, res, next) => {
   res.send({ status: 200, message: 'success' });
   next();
 });
-router.post('/report', express.json({ type: ['application/json', 'text/plain'] }), async (req: IRequest<ReportParams>, res, next) => {
+apiRouter.post('/report', express.json({ type: ['application/json', 'text/plain'] }), async (req: IRequest<ReportParams>, res, next) => {
   const data = req.body;
   if (!data.project) {
     res.status(400).send({ status: 400, message: 'Missing parameter: project' });
@@ -84,7 +85,7 @@ router.post('/report', express.json({ type: ['application/json', 'text/plain'] }
 });
 
 /** 分页查询异常日志（project 可选） */
-router.get('/report-list', authMiddleware, (req: IRequest<{}, ReportListParams>, res) => {
+apiRouter.get('/report-list', authMiddleware, (req: IRequest<{}, ReportListParams>, res) => {
   const { project, start_time, end_time, page, page_size } = req.query;
   const result = queryErrorReports({
     project: project || undefined,
@@ -97,7 +98,7 @@ router.get('/report-list', authMiddleware, (req: IRequest<{}, ReportListParams>,
 });
 
 /** 按项目分组统计异常数 */
-router.get('/project-stats', authMiddleware, (req: IRequest<{}, ProjectStatsParams>, res) => {
+apiRouter.get('/project-stats', authMiddleware, (req: IRequest<{}, ProjectStatsParams>, res) => {
   const { start_time, end_time } = req.query;
   const list = queryProjectStats({
     start_time: start_time ? new Date(start_time).getTime() : undefined,
@@ -107,7 +108,7 @@ router.get('/project-stats', authMiddleware, (req: IRequest<{}, ProjectStatsPara
 });
 
 /** 查询数据库中的项目列表（需认证） */
-router.get('/projects', authMiddleware, (req: AuthRequest, res) => {
+apiRouter.get('/projects', authMiddleware, (req: AuthRequest, res) => {
   const userId = req.user!.userId;
   const list = getReposByUserId(userId);
   res.json({ status: 200, total: list.length, list });
@@ -118,12 +119,12 @@ function getRedirectUri(req: Request): string {
 }
 
 /** Gitee OAuth 登录跳转 */
-router.get('/auth/gitee', (req, res) => {
+authRouter.get('/gitee', (req, res) => {
   res.redirect(getGiteeAuthUrl(getRedirectUri(req)));
 });
 
 /** Gitee OAuth 回调 */
-router.get('/auth/gitee/callback', async (req, res) => {
+authRouter.get('/gitee/callback', async (req, res) => {
   const code = req.query.code as string | undefined;
   if (!code) {
     res.status(400).json({ status: 400, message: 'Missing code' });
@@ -139,7 +140,7 @@ router.get('/auth/gitee/callback', async (req, res) => {
 });
 
 /** 从 Gitee 同步仓库列表到数据库（需认证） */
-router.post('/repos/sync', authMiddleware, async (req: AuthRequest, res) => {
+apiRouter.post('/repos/sync', authMiddleware, async (req: AuthRequest, res) => {
   const userId = req.user!.userId;
   const user = getUserById(userId);
   if (!user) {
@@ -155,7 +156,7 @@ router.post('/repos/sync', authMiddleware, async (req: AuthRequest, res) => {
 });
 
 /** 上传文件 */
-router.post('/upload', upload.array('file'), async (req: IRequest<{}, UploadParams>, res, next) => {
+apiRouter.post('/upload', upload.array('file'), async (req: IRequest<{}, UploadParams>, res, next) => {
   const { project, timestamp } = req.query;
   const files = req.files as Express.Multer.File[] | undefined;
 
@@ -172,5 +173,3 @@ router.post('/upload', upload.array('file'), async (req: IRequest<{}, UploadPara
   res.send({ status: 200, message: 'success', ...result });
   next();
 });
-
-export default router;
