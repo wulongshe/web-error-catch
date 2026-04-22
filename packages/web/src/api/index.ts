@@ -67,6 +67,7 @@ export async function getProjectStats(params?: { start_time?: string; end_time?:
 export async function getErrorList(params: ErrorListParams): Promise<ErrorListResult> {
   const qs = toQuery({
     project: params.project,
+    url: params.url,
     start_time: params.start_time,
     end_time: params.end_time,
     page: params.page,

@@ -13,7 +13,11 @@ function catchError({ project, url }: Options) {
   window.addEventListener(
     'error',
     (error) => {
-      send(url, { project, stack: error.error?.stack ?? String(error.error ?? error.message) });
+      send(url, {
+        project,
+        stack: error.error?.stack ?? String(error.error ?? error.message),
+        url: window.location.href,
+      });
     },
     true,
   );

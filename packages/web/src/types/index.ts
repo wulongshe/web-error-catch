@@ -41,6 +41,7 @@ export interface ErrorRecord {
 // 分页查询参数
 export interface ErrorListParams {
   project?: string;
+  url?: string;
   start_time?: string;
   end_time?: string;
   page?: number;

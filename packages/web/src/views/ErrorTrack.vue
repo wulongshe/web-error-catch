@@ -18,6 +18,7 @@ const projectsLoading = ref(false);
 // 筛选表单
 const filter = reactive({
   project: '',
+  url: '',
   dateRange: null as [Date, Date] | null,
 });
 
@@ -55,6 +56,7 @@ async function fetchList() {
       page_size: pagination.page_size,
     };
     if (filter.project) params.project = filter.project;
+    if (filter.url.trim()) params.url = filter.url.trim();
     if (filter.dateRange) {
       params.start_time = formatDateTime(filter.dateRange[0].getTime());
       params.end_time = formatDateTime(filter.dateRange[1].getTime());
@@ -78,6 +80,7 @@ function handleSearch() {
 // 重置筛选
 function handleReset() {
   filter.project = '';
+  filter.url = '';
   filter.dateRange = null;
   pagination.page = 1;
   fetchList();
@@ -164,6 +167,16 @@ watch(
             @click="loadProjects(true)"
           />
         </div>
+
+        <!-- URL 模糊搜索 -->
+        <el-input
+          v-model="filter.url"
+          placeholder="URL"
+          clearable
+          style="width: 220px"
+          @keyup.enter="handleSearch"
+          @clear="handleSearch"
+        />
 
         <!-- 时间范围 -->
         <el-date-picker

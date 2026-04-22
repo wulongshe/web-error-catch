@@ -24,6 +24,7 @@ interface ReportParams {
 
 interface ReportListParams {
   project?: string;
+  url?: string;
   start_time?: string;
   end_time?: string;
   page?: string;
@@ -86,9 +87,10 @@ apiRouter.post('/report', express.json({ type: ['application/json', 'text/plain'
 
 /** 分页查询异常日志（project 可选） */
 apiRouter.get('/report-list', authMiddleware, (req: IRequest<{}, ReportListParams>, res) => {
-  const { project, start_time, end_time, page, page_size } = req.query;
+  const { project, url, start_time, end_time, page, page_size } = req.query;
   const result = queryErrorReports({
     project: project || undefined,
+    url: url || undefined,
     start_time: start_time ? new Date(start_time).getTime() : undefined,
     end_time: end_time ? new Date(end_time).getTime() : undefined,
     page: page ? Number(page) : undefined,

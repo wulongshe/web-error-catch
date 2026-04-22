@@ -99,6 +99,7 @@ export function saveErrorReport(report: ErrorReport) {
 
 export interface QueryErrorReportsParams {
   project?: string;
+  url?: string;
   start_time?: number;
   end_time?: number;
   page?: number;
@@ -109,7 +110,7 @@ export interface QueryErrorReportsParams {
  * 分页查询错误报告（project 可选）
  */
 export function queryErrorReports(params: QueryErrorReportsParams) {
-  const { project, start_time, end_time, page = 1, page_size = 20 } = params;
+  const { project, url, start_time, end_time, page = 1, page_size = 20 } = params;
 
   const conditions: string[] = [];
   const args: (string | number)[] = [];
@@ -118,6 +119,12 @@ export function queryErrorReports(params: QueryErrorReportsParams) {
   if (project) {
     conditions.push('project = ?');
     args.push(project);
+  }
+
+  // url 模糊搜索
+  if (url) {
+    conditions.push('url LIKE ?');
+    args.push(`%${url}%`);
   }
 
   if (start_time != null) {
