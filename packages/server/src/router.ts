@@ -2,6 +2,7 @@ import express, { type Request } from 'express';
 import { upload, handleUpload, handleReport, type UploadParams, getGiteeAuthUrl, handleGiteeCallback, syncAndGetRepos, getReposByUserId } from '#src/controller/index.ts';
 import { queryErrorReports, queryProjectStats, getUserById } from '#src/database/index.ts';
 import { authMiddleware, type AuthRequest } from '#src/middleware/auth.ts';
+import { buildUrl } from '#src/utils.ts';
 
 export const apiRouter = express.Router();
 export const authRouter = express.Router();
@@ -117,7 +118,7 @@ apiRouter.get('/projects', authMiddleware, (req: AuthRequest, res) => {
 });
 
 function getRedirectUri(req: Request): string {
-  return `${req.protocol}://${req.get('host')}/auth/gitee/callback`;
+  return buildUrl(req, '/auth/gitee/callback');
 }
 
 /** Gitee OAuth 登录跳转 */
@@ -135,7 +136,7 @@ authRouter.get('/gitee/callback', async (req, res) => {
   try {
     const result = await handleGiteeCallback(code, getRedirectUri(req));
     const params = new URLSearchParams({ token: result.token, user: JSON.stringify(result.user) });
-    res.redirect(`${req.protocol}://${req.get('host')}/?${params}`);
+    res.redirect(`/?${params}`);
   } catch (err) {
     res.status(500).json({ status: 500, message: (err as Error).message });
   }
