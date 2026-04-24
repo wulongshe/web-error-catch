@@ -12,6 +12,7 @@
     "prettier:all": "npx pnpm recursive run prettier",
     "test:all": "npx pnpm recursive run test",
     "build:all": "npx pnpm recursive run build",
+    "clean": "pnpm -r exec rm -rf node_modules && rm -rf node_modules",
     "ac": "git add . && cz",
     "cm": "cz"
   },
